@@ -1,17 +1,19 @@
-import json
-from typing import Dict
+import sys
 
-INDENTATION = 4
+from dict_typer.convert import convert, ConvertException
 
 
-def convert(source: str) -> str:
-    parsed: Dict = json.loads(source)
-    if not isinstance(parsed, Dict):
-        raise Exception("Expected a dictionary")
+def dict_typer() -> None:
+    if sys.stdin.isatty():
+        print("Pipe dictionary instance dict-typer")
+        sys.exit(1)
 
-    root_def = ["class RootType(TypedDict):"]
-    for key, value in parsed.items():
-        print(key, value, type(value))
-        root_def.append(" " * INDENTATION + f"{key}: {type(value).__name__}")
+    stream = sys.stdin.read()
 
-    return "\n".join(root_def)
+    try:
+        output = convert(stream)
+    except ConvertException as e:
+        print(str(e))
+        sys.exit(2)
+
+    print(output)

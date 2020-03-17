@@ -26,3 +26,6 @@ flake8-comprehensions = "^3.2.2"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
+
+[tool.poetry.scripts]
+dt = 'dict_typer:dict_typer'
