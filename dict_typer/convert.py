@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple, List
 
 INDENTATION = 4
 BUILTINS = (str, bytes, int, float)
@@ -12,23 +12,19 @@ def _get_type(item: Any) -> Any:
     if isinstance(item, BUILTINS):
         return type(item).__name__
 
-    if isinstance(item, list):
+    if isinstance(item, (List, Tuple)):
+        if isinstance(item, List):
+            sequence_type = "List"
+        else:
+            sequence_type = "Tuple"
+
         list_item_types = {_get_type(x) for x in item}
         if len(list_item_types) == 0:
-            return "List"
+            return sequence_type
         if len(list_item_types) == 1:
-            return f"List[{list_item_types.pop()}]"
+            return f"{sequence_type}[{list_item_types.pop()}]"
         union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
-        return f"List[{union_type}]"
-
-    if isinstance(item, tuple):
-        tuple_item_types = {_get_type(x) for x in item}
-        if len(tuple_item_types) == 0:
-            return "Tuple"
-        if len(tuple_item_types) == 1:
-            return f"Tuple[{tuple_item_types.pop()}]"
-        union_type = f"Union[{', '.join(str(t) for t in sorted(tuple_item_types))}]"
-        return f"Tuple[{union_type}]"
+        return f"{sequence_type}[{union_type}]"
 
 
 def convert(source: Dict) -> str:
