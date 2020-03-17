@@ -7,7 +7,7 @@ flake8:
 lint: mypy flake8
 
 test:
-	poetry run pytest tests -v
+	poetry run pytest tests -vxs
 
 shell:
 	poetry run ipython

@@ -5,9 +5,20 @@ A simple tool to take a json dictionary instance and convert it into Python Type
 ## Example
 
 ```
--> % echo '{"number": 123, "text": "hello, world", "fraction": 0.12}' | dt
+-> % cat test.json
+{
+  "id": 1241,
+  "summary": "This is a summary",
+  "fraction": 0.181,
+  "items": ["list", "with", "items"],
+  "mixed": ["mixed", "items", 1, "as", "well", 0.15]
+}
+
+-> % cat test.json | p run dt
 class RootType(TypedDict):
-    number: int
-    text: str
+    id: int
+    summary: str
     fraction: float
+    items: List[str]
+    mixed: List[Union[float, int, str]]
 ```
