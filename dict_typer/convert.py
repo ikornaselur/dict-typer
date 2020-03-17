@@ -1,8 +1,7 @@
-import json
 from typing import Any, Dict
 
 INDENTATION = 4
-BUILTINS = (str, int, float)
+BUILTINS = (str, bytes, int, float)
 
 
 class ConvertException(Exception):
@@ -22,18 +21,22 @@ def _get_type(item: Any) -> Any:
         union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
         return f"List[{union_type}]"
 
+    if isinstance(item, tuple):
+        tuple_item_types = {_get_type(x) for x in item}
+        if len(tuple_item_types) == 0:
+            return "Tuple"
+        if len(tuple_item_types) == 1:
+            return f"Tuple[{tuple_item_types.pop()}]"
+        union_type = f"Union[{', '.join(str(t) for t in sorted(tuple_item_types))}]"
+        return f"Tuple[{union_type}]"
 
-def convert(source: str) -> str:
-    try:
-        parsed: Dict = json.loads(source)
-    except json.decoder.JSONDecodeError as e:
-        raise ConvertException(f"Unable to parse source: {str(e)}")
 
-    if not isinstance(parsed, Dict):
+def convert(source: Dict) -> str:
+    if not isinstance(source, Dict):
         raise Exception("Expected a dictionary")
 
     root_def = ["class RootType(TypedDict):"]
-    for key, value in parsed.items():
+    for key, value in source.items():
         root_def.append(" " * INDENTATION + f"{key}: {_get_type(value)}")
 
     return "\n".join(root_def)

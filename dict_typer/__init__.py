@@ -1,4 +1,6 @@
+import json
 import sys
+from typing import Dict
 
 from dict_typer.convert import ConvertException, convert
 
@@ -11,7 +13,12 @@ def dict_typer() -> None:
     stream = sys.stdin.read()
 
     try:
-        output = convert(stream)
+        parsed: Dict = json.loads(stream)
+    except json.decoder.JSONDecodeError as e:
+        raise ConvertException(f"Unable to parse source: {str(e)}")
+
+    try:
+        output = convert(parsed)
     except ConvertException as e:
         print(str(e))
         sys.exit(2)

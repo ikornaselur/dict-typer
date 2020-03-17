@@ -1,10 +1,8 @@
-import json
-
 from dict_typer import convert
 
 
 def test_convert_simple_json() -> None:
-    source = json.dumps({"id": 123, "item": "value", "progress": 0.71})
+    source = {"id": 123, "item": "value", "progress": 0.71}
 
     # fmt: off
     expected = "\n".join([
@@ -19,7 +17,7 @@ def test_convert_simple_json() -> None:
 
 
 def test_convert_with_empty_list() -> None:
-    source = json.dumps({"items": []})
+    source = {"items": []}  # type: ignore
 
     # fmt: off
     expected = "\n".join([
@@ -32,7 +30,7 @@ def test_convert_with_empty_list() -> None:
 
 
 def test_convert_with_simple_list() -> None:
-    source = json.dumps({"items": [1, 2, 3]})
+    source = {"items": [1, 2, 3]}
 
     # fmt: off
     expected = "\n".join([
@@ -45,7 +43,7 @@ def test_convert_with_simple_list() -> None:
 
 
 def test_convert_with_mixed_list() -> None:
-    source = json.dumps({"items": [1, "2", 3.5]})
+    source = {"items": [1, "2", 3.5]}
 
     # fmt: off
     expected = "\n".join([

@@ -2,6 +2,7 @@
 
 A simple tool to take a json dictionary instance and convert it into Python TypedDict class definitions
 
-## Example
+## Examples
 
-![example](https://raw.githubusercontent.com/ikornaselur/dict-typer/master/.github/example.png)
+![shell](https://raw.githubusercontent.com/ikornaselur/dict-typer/master/.github/examples/shell.png)
+![python](https://raw.githubusercontent.com/ikornaselur/dict-typer/master/.github/examples/python.png)
