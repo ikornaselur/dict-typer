@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List, Any
+from typing import Any, Dict
 
 INDENTATION = 4
 BUILTINS = (str, int, float)

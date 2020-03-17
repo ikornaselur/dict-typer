@@ -1,6 +1,6 @@
 import sys
 
-from dict_typer.convert import convert, ConvertException
+from dict_typer.convert import ConvertException, convert
 
 
 def dict_typer() -> None:
