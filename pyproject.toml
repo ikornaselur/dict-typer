@@ -6,7 +6,7 @@ authors = ["Axel <dict.typer@absalon.is>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.6"
 typing_extensions = "^3.7.4"
 
 [tool.poetry.dev-dependencies]
