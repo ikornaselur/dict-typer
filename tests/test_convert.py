@@ -131,3 +131,48 @@ def test_convert_with_nested_dict() -> None:
     # fmt: on
 
     assert convert(source) == expected
+
+
+def test_convert_with_multiple_nested_dict() -> None:
+    source = {"nest": {"foo": "bar"}, "other_nest": {"baz": "qux"}}
+
+    # fmt: off
+    expected = "\n".join([
+        "class RootType(TypedDict):",
+        "    nest: NestType",
+        "    other_nest: OtherNestType",
+        "",
+        "class NestType(TypedDict):",
+        "    foo: str",
+        "",
+        "class OtherNestType(TypedDict):",
+        "    baz: str",
+    ])
+    # fmt: on
+
+    assert convert(source) == expected
+
+
+def test_convert_with_repeated_nested_dict() -> None:
+    source = {
+        "nest": {"foo": "bar"},
+        "other_nest": {"foo": "qux"},
+        "unique_nest": {"baz": "qux"},
+    }
+
+    # fmt: off
+    expected = "\n".join([
+        "class RootType(TypedDict):",
+        "    nest: NestType",
+        "    other_nest: NestType",
+        "    unique_nest: UniqueNestType",
+        "",
+        "class NestType(TypedDict):",
+        "    foo: str",
+        "",
+        "class UniqueNestType(TypedDict):",
+        "    baz: str",
+    ])
+    # fmt: on
+
+    assert convert(source) == expected

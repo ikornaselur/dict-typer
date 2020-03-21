@@ -13,7 +13,7 @@ class UnknownType(ConvertException):
     pass
 
 
-@dataclass
+@dataclass(frozen=True)
 class TypedDictDefinition:
     name: str
     members: List[Tuple[str, str]]
@@ -30,6 +30,17 @@ class TypedDictDefinition:
             ]
             return "\n".join([printable_name, *printable_members, *printable_nested])
         return "\n".join([printable_name, *printable_members])
+
+    def __eq__(self, other: Any) -> bool:
+        """ Only compares the members and ignores the order """
+        if self.__class__ != other.__class__:
+            return False
+        assert isinstance(other, self.__class__)
+
+        self_members = sorted(self.members)
+        other_members = sorted(other.members)
+
+        return self_members == other_members
 
 
 def convert(
@@ -60,10 +71,16 @@ def _convert_dict(
     # Second pass of nested dict types
     for nested_key, nested_val in nested:
         nested_def = _convert_dict(
-            nested_val, root_type_name=nested_key.title(), type_postfix=type_postfix
+            nested_val,
+            root_type_name=nested_key.title().replace("_", ""),
+            type_postfix=type_postfix,
         )
-        members.append((nested_key, nested_def.name))
-        nested_defs.append(nested_def)
+        existing_def = next((d for d in nested_defs if d == nested_def), None)
+        if existing_def:
+            members.append((nested_key, existing_def.name))
+        else:
+            members.append((nested_key, nested_def.name))
+            nested_defs.append(nested_def)
 
     return TypedDictDefinition(
         name=f"{root_type_name}{type_postfix}", members=members, nested_defs=nested_defs
