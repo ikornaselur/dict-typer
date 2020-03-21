@@ -117,7 +117,6 @@ def test_convert_with_mixed_tuple() -> None:
     assert convert(source) == expected
 
 
-"""
 def test_convert_with_nested_dict() -> None:
     source = {"nest": {"foo": "bar"}}
 
@@ -126,10 +125,9 @@ def test_convert_with_nested_dict() -> None:
         "class RootType(TypedDict):",
         "    nest: NestType",
         "",
-        "class NextType(TypedDict):",
+        "class NestType(TypedDict):",
         "    foo: str",
     ])
     # fmt: on
 
     assert convert(source) == expected
-"""
