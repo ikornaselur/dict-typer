@@ -9,5 +9,8 @@ lint: mypy flake8
 test:
 	poetry run pytest tests -vxs
 
+test_%:
+	poetry run pytest tests -xvs -ktest_$*
+
 shell:
 	poetry run ipython

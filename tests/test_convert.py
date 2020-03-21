@@ -16,6 +16,29 @@ def test_convert_simple_json() -> None:
     assert convert(source) == expected
 
 
+def test_convert_builtins() -> None:
+    source = {
+        "str_type": "str",
+        "bytes_type": b"bytes",
+        "int_type": 1,
+        "float_type": 1.5,
+        "complex_type": 1 + 1j,
+    }
+
+    # fmt: off
+    expected = "\n".join([
+        "class RootType(TypedDict):",
+        "    str_type: str",
+        "    bytes_type: bytes",
+        "    int_type: int",
+        "    float_type: float",
+        "    complex_type: complex",
+    ])
+    # fmt: on
+
+    assert convert(source) == expected
+
+
 def test_convert_with_empty_list() -> None:
     source = {"items": []}  # type: ignore
 
@@ -92,3 +115,21 @@ def test_convert_with_mixed_tuple() -> None:
     # fmt: on
 
     assert convert(source) == expected
+
+
+"""
+def test_convert_with_nested_dict() -> None:
+    source = {"nest": {"foo": "bar"}}
+
+    # fmt: off
+    expected = "\n".join([
+        "class RootType(TypedDict):",
+        "    nest: NestType",
+        "",
+        "class NextType(TypedDict):",
+        "    foo: str",
+    ])
+    # fmt: on
+
+    assert convert(source) == expected
+"""
