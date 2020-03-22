@@ -3,7 +3,30 @@ import tempfile
 
 from dict_typer import convert
 
-TEST_SOURCE = {"foo": "bar", "items": [1, "2", 3.0]}
+# fmt: off
+TEST_SOURCE = {
+    "foo": "bar",
+    "items": [1, "2", 3.0],
+    "nested": {
+        "id": 1,
+        "value": "val",
+    },
+    "same_type_other_nested": {
+        "id": 2,
+        "value": "hello",
+    },
+    "subsets": {
+        "first": {1, 2},
+        "second": {3, 4},
+        "third": {5, 6},
+    },
+}
+# fmt: on
+
+
+def _line_numbered(string: str) -> str:
+    lines = string.split("\n")
+    return "\n".join([f"{idx+1:2}: {line}" for idx, line in enumerate(lines)])
 
 
 def test_script_runs_with_nonzero() -> None:
@@ -45,9 +68,17 @@ def test_script_runs_with_nonzero() -> None:
         # 4.
         result = subprocess.run(["python", f.name], capture_output=True)
         returncode = result.returncode
-        assert (
-            returncode == 0
-        ), f"Non zero return code from script. stderr: \n\n{result.stderr.decode('utf-8')}"
+        assert returncode == 0, "\n".join(
+            [
+                "Non zero return code from script.",
+                "stderr:",
+                result.stderr.decode("utf-8"),
+                "Full script:",
+                "-" * 60,
+                _line_numbered(output),
+                "-" * 60,
+            ]
+        )
 
         stdout = result.stdout.decode("utf-8")
         assert stdout == f"{TEST_SOURCE}\n"
