@@ -73,7 +73,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
 
       - name: Mypy
-        run: poetry run mypy dict_typer tests
+        run: poetry run mypy dict_typer tests/e2e tests/unit
 
       - name: Flake8
-        run: poetry run flake8 dict_typer tests
+        run: poetry run flake8 dict_typer tests/e2e tests/unit
