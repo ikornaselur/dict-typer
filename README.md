@@ -2,6 +2,49 @@
 
 A simple tool to take a json dictionary instance and convert it into Python TypedDict class definitions
 
+## Why is this useful?
+
+When dealing with API responses, you're very likely to be using JSON responses,
+and you might have deeply nested dictionaries, lists of items and it can be
+slightly hard to wrap your head around the structure of the responess you are
+working with. The first thing I usually do it try to create some data structure
+around it so that I can benefit from linting and typing information in my code.
+
+Now this tends to be time consuming and error prone, so I thought it might be a
+good idea to automate this process with a tool for the future. Just as an
+example, if we take the output generated from the Example section below and
+imagine it's a response we get from an api. We can plug it in like this:
+
+```python
+from project.types import RootType
+
+def get_from_api() -> RootType:
+    pass
+
+
+def run() -> None:
+    response = get_from_api()
+
+    test1 = response["nested_dict"]["number"] + 1
+    test2 = response["nested_dict"]["string"] + 1
+    test3 = response["nested_dict"]["non_existant"] + 1
+```
+
+and if we run mypy on this
+
+```shell
+-> % p run mypy test.py
+test.py:11: error: Unsupported operand types for + ("str" and "int")
+test.py:12: error: TypedDict "NestedDictType" has no key 'non_existant'
+Found 2 errors in 1 file (checked 1 source file)
+```
+
+it will immediately detect two issues!
+
+I also want to use this project to learn more about analysing code, making sure
+the project is well tested so that it's easy to experiment and try different
+approaches.
+
 ## Examples
 
 ### Calling from shell
@@ -61,7 +104,7 @@ class RootType(TypedDict):
     nested_dict: NestedDictType
     same_nested_dict: NestedDictType
     multipe_levels: MultipeLevelsType
-  ```
+```
 
 ### Calling from Python
 ```python
