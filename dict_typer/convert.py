@@ -82,9 +82,11 @@ class TypedDictDefinition:
         if isinstance(item, BUILTINS):
             return type(item).__name__
 
-        if isinstance(item, (list, tuple)):
+        if isinstance(item, (list, tuple, set)):
             if isinstance(item, List):
                 sequence_type = "List"
+            elif isinstance(item, Set):
+                sequence_type = "Set"
             else:
                 sequence_type = "Tuple"
             self._typing_imports.add(sequence_type)
