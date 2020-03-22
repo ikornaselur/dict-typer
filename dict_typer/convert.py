@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Any, Dict, List, Tuple
 
 INDENTATION = 4
@@ -13,11 +12,20 @@ class UnknownType(ConvertException):
     pass
 
 
-@dataclass(frozen=True)
 class TypedDictDefinition:
     name: str
     members: List[Tuple[str, str]]
     nested_defs: List["TypedDictDefinition"]
+
+    def __init__(
+        self,
+        name: str,
+        members: List[Tuple[str, str]],
+        nested_defs: List["TypedDictDefinition"],
+    ) -> None:
+        self.name = name
+        self.members = members
+        self.nested_defs = nested_defs
 
     def printable(self) -> str:
         printable_name = f"class {self.name}(TypedDict):"
