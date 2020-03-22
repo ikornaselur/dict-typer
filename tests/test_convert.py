@@ -176,3 +176,44 @@ def test_convert_with_repeated_nested_dict() -> None:
     # fmt: on
 
     assert convert(source) == expected
+
+
+def test_convert_optionally_adds_imports() -> None:
+    source = {"itemsList": [1, 2.0, "3"], "itemsTuple": (4, 5, 6)}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List, Tuple, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    itemsList: List[Union[float, int, str]]",
+        "    itemsTuple: Tuple[int]",
+    ])
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
+
+
+def test_convert_optionally_adds_imports_with_nested_defs() -> None:
+    source = {"itemsList": [1, 2, 3], "nest": {"itemsTuple": (4, 5, 6)}}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List, Tuple",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    itemsList: List[int]",
+        "    nest: NestType",
+        "",
+        "class NestType(TypedDict):",
+        "    itemsTuple: Tuple[int]",
+    ])
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
