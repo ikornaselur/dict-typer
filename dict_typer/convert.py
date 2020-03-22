@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Set, Tuple
 
 INDENTATION = 4
 BUILTINS = (str, bytes, int, float, complex)
@@ -16,28 +16,91 @@ class TypedDictDefinition:
     name: str
     members: List[Tuple[str, str]]
     nested_defs: List["TypedDictDefinition"]
+    _typing_imports: Set[str]
 
-    def __init__(
-        self,
-        name: str,
-        members: List[Tuple[str, str]],
-        nested_defs: List["TypedDictDefinition"],
-    ) -> None:
-        self.name = name
-        self.members = members
-        self.nested_defs = nested_defs
+    def __init__(self, root_type_name: str, type_postfix: str, source: Dict,) -> None:
+        self.name = f"{root_type_name}{type_postfix}"
+        self.members: List[Tuple[str, str]] = []
+        self.nested_defs: List[TypedDictDefinition] = []
+        self._typing_imports = set()
 
-    def printable(self) -> str:
+        # First pass of base types
+        nested: List[Tuple[str, Dict]] = []
+
+        for key, value in source.items():
+            if isinstance(value, dict):
+                nested.append((key, value))
+                continue
+            self.members.append((key, self._get_type(value)))
+
+        # Second pass of nested dict types
+        for nested_key, nested_val in nested:
+            nested_def = TypedDictDefinition(
+                root_type_name=nested_key.title().replace("_", ""),
+                type_postfix=type_postfix,
+                source=nested_val,
+            )
+            existing_def = next((d for d in self.nested_defs if d == nested_def), None)
+            if existing_def:
+                self.members.append((nested_key, existing_def.name))
+            else:
+                self.members.append((nested_key, nested_def.name))
+                self.nested_defs.append(nested_def)
+
+    def printable(self, show_imports: bool = False) -> str:
         printable_name = f"class {self.name}(TypedDict):"
         printable_members = [
             " " * INDENTATION + f"{key}: {value}" for key, value in self.members
         ]
-        if self.nested_defs:
-            printable_nested = [
-                "\n" + nested_def.printable() for nested_def in self.nested_defs
+
+        output: List[str] = []
+        if show_imports:
+            output += [
+                f"from typing import {', '.join(self.typing_imports)}",
+                "",
+                "from typing_extensions import TypedDict",
+                "",
+                "",
             ]
-            return "\n".join([printable_name, *printable_members, *printable_nested])
-        return "\n".join([printable_name, *printable_members])
+
+        output += [printable_name, *printable_members]
+
+        if self.nested_defs:
+            output += ["\n" + nested_def.printable() for nested_def in self.nested_defs]
+        return "\n".join(output)
+
+    @property
+    def typing_imports(self) -> List[str]:
+        imports = self._typing_imports
+
+        for nested_def in self.nested_defs:
+            imports.update(nested_def.typing_imports)
+
+        return sorted(imports)
+
+    def _get_type(self, item: Any) -> Any:
+        if isinstance(item, BUILTINS):
+            return type(item).__name__
+
+        if isinstance(item, (list, tuple, set)):
+            if isinstance(item, List):
+                sequence_type = "List"
+            elif isinstance(item, Set):
+                sequence_type = "Set"
+            else:
+                sequence_type = "Tuple"
+            self._typing_imports.add(sequence_type)
+
+            list_item_types = {self._get_type(x) for x in item}
+            if len(list_item_types) == 0:
+                return sequence_type
+            if len(list_item_types) == 1:
+                return f"{sequence_type}[{list_item_types.pop()}]"
+            union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
+            self._typing_imports.add("Union")
+            return f"{sequence_type}[{union_type}]"
+
+        raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
 
     def __eq__(self, other: Any) -> bool:
         """ Only compares the members and ignores the order """
@@ -52,65 +115,17 @@ class TypedDictDefinition:
 
 
 def convert(
-    source: Dict, source_type_name: str = "Root", type_postfix: str = "Type"
+    source: Dict,
+    *,
+    source_type_name: str = "Root",
+    type_postfix: str = "Type",
+    show_imports: bool = False,
 ) -> str:
     if not isinstance(source, Dict):
         raise Exception("Expected a dictionary")
 
-    source_def = _convert_dict(source, source_type_name, type_postfix)
-
-    return source_def.printable()
-
-
-def _convert_dict(
-    source: Dict, root_type_name: str, type_postfix: str
-) -> TypedDictDefinition:
-    # First pass of base types
-    nested: List[Tuple[str, Dict]] = []
-    members: List[Tuple[str, str]] = []
-    nested_defs: List[TypedDictDefinition] = []
-
-    for key, value in source.items():
-        if isinstance(value, dict):
-            nested.append((key, value))
-            continue
-        members.append((key, _get_type(value)))
-
-    # Second pass of nested dict types
-    for nested_key, nested_val in nested:
-        nested_def = _convert_dict(
-            nested_val,
-            root_type_name=nested_key.title().replace("_", ""),
-            type_postfix=type_postfix,
-        )
-        existing_def = next((d for d in nested_defs if d == nested_def), None)
-        if existing_def:
-            members.append((nested_key, existing_def.name))
-        else:
-            members.append((nested_key, nested_def.name))
-            nested_defs.append(nested_def)
-
-    return TypedDictDefinition(
-        name=f"{root_type_name}{type_postfix}", members=members, nested_defs=nested_defs
+    source_def = TypedDictDefinition(
+        root_type_name=source_type_name, type_postfix=type_postfix, source=source
     )
 
-
-def _get_type(item: Any) -> Any:
-    if isinstance(item, BUILTINS):
-        return type(item).__name__
-
-    if isinstance(item, (list, tuple)):
-        if isinstance(item, List):
-            sequence_type = "List"
-        else:
-            sequence_type = "Tuple"
-
-        list_item_types = {_get_type(x) for x in item}
-        if len(list_item_types) == 0:
-            return sequence_type
-        if len(list_item_types) == 1:
-            return f"{sequence_type}[{list_item_types.pop()}]"
-        union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
-        return f"{sequence_type}[{union_type}]"
-
-    raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
+    return source_def.printable(show_imports=show_imports)
