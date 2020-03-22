@@ -66,22 +66,21 @@ def test_script_runs_with_nonzero() -> None:
         f.flush()
 
         # 4.
-        result = subprocess.run(["python", f.name], capture_output=True)
-        returncode = result.returncode
-        assert returncode == 0, "\n".join(
-            [
-                "Non zero return code from script.",
-                "stderr:",
-                result.stderr.decode("utf-8"),
-                "Full script:",
-                "-" * 60,
-                _line_numbered(output),
-                "-" * 60,
-            ]
-        )
+        with subprocess.Popen(["python", f.name], stdout=subprocess.PIPE) as proc:
+            stdout, stderr = proc.communicate()
+            assert not proc.returncode, "\n".join(
+                [
+                    "Non zero return code from script.",
+                    "stderr:",
+                    stderr.decode("utf-8"),
+                    "Full script:",
+                    "-" * 60,
+                    _line_numbered(output),
+                    "-" * 60,
+                ]
+            )
 
-        stdout = result.stdout.decode("utf-8")
-        assert stdout == f"{TEST_SOURCE}\n"
+            assert stdout.decode("utf-8") == f"{TEST_SOURCE}\n"
 
 
 def test_mypy_has_no_issues() -> None:
@@ -121,11 +120,14 @@ def test_mypy_has_no_issues() -> None:
         f.flush()
 
         # 4.
-        result = subprocess.run(["mypy", f.name], capture_output=True)
-        returncode = result.returncode
-        assert (
-            returncode == 0
-        ), f"Non zero return code from script. stderr: \n\n{result.stdout.decode('utf-8')}"
 
-        stdout = result.stdout.decode("utf-8")
-        assert stdout == "Success: no issues found in 1 source file\n"
+        # 4.
+        with subprocess.Popen(["mypy", f.name], stdout=subprocess.PIPE) as proc:
+            stdout, stderr = proc.communicate()
+            assert not proc.returncode, "\n".join(
+                ["Non zero return code from mypy.", "stderr:", stderr.decode("utf-8")]
+            )
+
+            assert (
+                stdout.decode("utf-8") == "Success: no issues found in 1 source file\n"
+            )
