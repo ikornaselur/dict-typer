@@ -1,8 +1,8 @@
 mypy:
-	poetry run mypy dict_typer tests
+	poetry run mypy dict_typer tests/unit tests/e2e
 
 flake8:
-	poetry run flake8 dict_typer tests
+	poetry run flake8 dict_typer tests/unit tests/e2e
 
 lint: mypy flake8
 
