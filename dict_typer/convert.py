@@ -48,12 +48,8 @@ class TypedDictDefinition:
                 self.nested_defs.append(nested_def)
 
     def printable(self, show_imports: bool = False) -> str:
-        printable_name = f"class {self.name}(TypedDict):"
-        printable_members = [
-            " " * INDENTATION + f"{key}: {value}" for key, value in self.members
-        ]
-
         output: List[str] = []
+
         if show_imports:
             output += [
                 f"from typing import {', '.join(self.typing_imports)}",
@@ -63,10 +59,16 @@ class TypedDictDefinition:
                 "",
             ]
 
+        if self.nested_defs:
+            output += [nested_def.printable() + "\n" for nested_def in self.nested_defs]
+
+        printable_name = f"class {self.name}(TypedDict):"
+        printable_members = [
+            " " * INDENTATION + f"{key}: {value}" for key, value in self.members
+        ]
+
         output += [printable_name, *printable_members]
 
-        if self.nested_defs:
-            output += ["\n" + nested_def.printable() for nested_def in self.nested_defs]
         return "\n".join(output)
 
     @property
