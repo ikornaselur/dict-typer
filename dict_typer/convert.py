@@ -12,6 +12,10 @@ class UnknownType(ConvertException):
     pass
 
 
+def key_to_class_name(key: str) -> str:
+    return "".join(part[0].upper() + part[1:] for part in key.split("_"))
+
+
 class TypedDefinion:
     name: str
     members: List[Tuple[str, str]]
@@ -68,7 +72,7 @@ def convert(
     root_type_name: str = "Root",
     type_postfix: str = "Type",
     show_imports: bool = False,
-) -> Any:
+) -> str:
     if isinstance(source, list):
         raise ConvertException("Convert doesn't support list yet")
 
@@ -78,12 +82,26 @@ def convert(
     definitions: List[TypedDefinion] = []
     replacements: Dict[str, str] = {}
 
-    def convert_dict(type_name: str, d: Dict) -> None:
+    def convert_dict(type_name: str, d: Dict) -> str:
         for key, value in d.items():
             if isinstance(value, dict):
-                nested_type_name = f"{key.title().replace('_', '')}Type"
+                nested_type_name = f"{key_to_class_name(key)}Type"
                 convert_dict(nested_type_name, value)
                 d[key] = NestedDictDef(name=nested_type_name)
+            elif isinstance(value, list):
+                type_idx = 0
+                for idx, item in enumerate(value):
+                    if isinstance(item, dict):
+                        nested_type_name = f"{key_to_class_name(key)}ItemType"
+                        if type_idx:
+                            nested_type_name += str(type_idx)
+
+                        converted_type_name = convert_dict(nested_type_name, item)
+
+                        if converted_type_name == nested_type_name:
+                            type_idx += 1
+
+                        value[idx] = NestedDictDef(name=converted_type_name)
 
         members = []
         for key, value in d.items():
@@ -93,8 +111,10 @@ def convert(
         existing = next((td for td in definitions if td == type_def), None)
         if existing:
             replacements[type_name] = existing.name
+            return existing.name
         else:
             definitions.append(type_def)
+            return type_def.name
 
     def get_type(item: Any) -> Any:
         if isinstance(item, NestedDictDef):
