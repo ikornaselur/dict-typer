@@ -51,31 +51,6 @@ class TypedDefinion:
         return self_members == other_members
 
 
-def _get_type(item: Any) -> Any:
-    if isinstance(item, BUILTINS):
-        return type(item).__name__
-    if isinstance(item, NestedDictDef):
-        return item.name
-
-    if isinstance(item, (list, tuple, set)):
-        if isinstance(item, List):
-            sequence_type = "List"
-        elif isinstance(item, Set):
-            sequence_type = "Set"
-        else:
-            sequence_type = "Tuple"
-
-        list_item_types = {_get_type(x) for x in item}
-        if len(list_item_types) == 0:
-            return sequence_type
-        if len(list_item_types) == 1:
-            return f"{sequence_type}[{list_item_types.pop()}]"
-        union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
-        return f"{sequence_type}[{union_type}]"
-
-    raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
-
-
 class NestedDictDef:
     name: str
 
@@ -96,6 +71,7 @@ def convert(
     show_imports: bool = False,
 ) -> Any:
     queue: Queue[Tuple[str, Dict]] = Queue()
+    typing_imports: Set[str] = set()
 
     def process_dict(type_name: str, d: Dict) -> None:
         for key, value in d.items():
@@ -104,7 +80,35 @@ def convert(
                 process_dict(nested_type_name, value)
                 d[key] = NestedDictDef(name=nested_type_name)
 
+        # TODO: Replace the queue with just procesing asap?
         queue.put((type_name, d))
+
+    def get_type(item: Any) -> Any:
+        if isinstance(item, NestedDictDef):
+            return item.name
+
+        if isinstance(item, BUILTINS):
+            return type(item).__name__
+
+        if isinstance(item, (list, tuple, set)):
+            if isinstance(item, List):
+                sequence_type = "List"
+            elif isinstance(item, Set):
+                sequence_type = "Set"
+            else:
+                sequence_type = "Tuple"
+            typing_imports.add(sequence_type)
+
+            list_item_types = {get_type(x) for x in item}
+            if len(list_item_types) == 0:
+                return sequence_type
+            if len(list_item_types) == 1:
+                return f"{sequence_type}[{list_item_types.pop()}]"
+            union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
+            typing_imports.add("Union")
+            return f"{sequence_type}[{union_type}]"
+
+        raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
 
     process_dict(f"{root_type_name}{type_postfix}", source)
 
@@ -116,7 +120,7 @@ def convert(
 
         members = []
         for key, value in item.items():
-            members.append((key, _get_type(value)))
+            members.append((key, get_type(value)))
 
         type_def = TypedDefinion(name=type_name, members=members)
         existing = next((td for td in definitions if td == type_def), None)
@@ -125,4 +129,20 @@ def convert(
         else:
             definitions.append(type_def)
 
-    return "\n\n".join(d.printable(replacements) for d in definitions)
+    output = ""
+
+    if show_imports:
+        output += "\n".join(
+            [
+                f"from typing import {', '.join(sorted(typing_imports))}",
+                "",
+                "from typing_extensions import TypedDict",
+                "",
+                "",
+                "",
+            ]
+        )
+
+    output += "\n\n".join(d.printable(replacements) for d in definitions)
+
+    return output
