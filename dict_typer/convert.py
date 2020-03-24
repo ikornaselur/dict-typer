@@ -1,4 +1,3 @@
-from queue import Queue
 from typing import Any, Dict, List, Set, Tuple, Union
 
 INDENTATION = 4
@@ -70,19 +69,32 @@ def convert(
     type_postfix: str = "Type",
     show_imports: bool = False,
 ) -> Any:
-    queue: Queue[Tuple[str, Dict]] = Queue()
-    typing_imports: Set[str] = set()
+    if isinstance(source, list):
+        raise ConvertException("Convert doesn't support list yet")
+
     source = source.copy()  # Copy the source as it will be modified
 
-    def process_dict(type_name: str, d: Dict) -> None:
+    typing_imports: Set[str] = set()
+    definitions: List[TypedDefinion] = []
+    replacements: Dict[str, str] = {}
+
+    def convert_dict(type_name: str, d: Dict) -> None:
         for key, value in d.items():
             if isinstance(value, dict):
                 nested_type_name = f"{key.title().replace('_', '')}Type"
-                process_dict(nested_type_name, value)
+                convert_dict(nested_type_name, value)
                 d[key] = NestedDictDef(name=nested_type_name)
 
-        # TODO: Replace the queue with just procesing asap?
-        queue.put((type_name, d))
+        members = []
+        for key, value in d.items():
+            members.append((key, get_type(value)))
+
+        type_def = TypedDefinion(name=type_name, members=members)
+        existing = next((td for td in definitions if td == type_def), None)
+        if existing:
+            replacements[type_name] = existing.name
+        else:
+            definitions.append(type_def)
 
     def get_type(item: Any) -> Any:
         if isinstance(item, NestedDictDef):
@@ -111,24 +123,7 @@ def convert(
 
         raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
 
-    process_dict(f"{root_type_name}{type_postfix}", source)
-
-    definitions: List[TypedDefinion] = []
-    replacements: Dict[str, str] = {}
-
-    while not queue.empty():
-        type_name, item = queue.get()
-
-        members = []
-        for key, value in item.items():
-            members.append((key, get_type(value)))
-
-        type_def = TypedDefinion(name=type_name, members=members)
-        existing = next((td for td in definitions if td == type_def), None)
-        if existing:
-            replacements[type_name] = existing.name
-        else:
-            definitions.append(type_def)
+    convert_dict(f"{root_type_name}{type_postfix}", source)
 
     output = ""
 
