@@ -72,6 +72,7 @@ def convert(
 ) -> Any:
     queue: Queue[Tuple[str, Dict]] = Queue()
     typing_imports: Set[str] = set()
+    source = source.copy()  # Copy the source as it will be modified
 
     def process_dict(type_name: str, d: Dict) -> None:
         for key, value in d.items():

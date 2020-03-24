@@ -44,7 +44,7 @@ def test_script_runs_with_nonzero() -> None:
 
     output = convert(
         TEST_SOURCE,
-        source_type_name=source_type_name,
+        root_type_name=source_type_name,
         type_postfix=type_postfix,
         show_imports=True,
     )
@@ -72,7 +72,7 @@ def test_script_runs_with_nonzero() -> None:
                 [
                     "Non zero return code from script.",
                     "stderr:",
-                    stderr.decode("utf-8"),
+                    stderr and stderr.decode("utf-8") or "",
                     "Full script:",
                     "-" * 60,
                     _line_numbered(output),
@@ -98,7 +98,7 @@ def test_mypy_has_no_issues() -> None:
 
     output = convert(
         TEST_SOURCE,
-        source_type_name=source_type_name,
+        root_type_name=source_type_name,
         type_postfix=type_postfix,
         show_imports=True,
     )
