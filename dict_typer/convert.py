@@ -1,70 +1,10 @@
-from typing import Any, Dict, List, Set, Tuple, Union
+from typing import Any, Dict, List, Set, Union
 
-INDENTATION = 4
+from dict_typer.exceptions import ConvertException
+from dict_typer.models import NestedDictDef, TypedDefinion
+from dict_typer.utils import key_to_class_name
+
 BUILTINS = (str, bytes, int, float, complex)
-
-
-class ConvertException(Exception):
-    pass
-
-
-class UnknownType(ConvertException):
-    pass
-
-
-def key_to_class_name(key: str) -> str:
-    return "".join(part[0].upper() + part[1:] for part in key.split("_"))
-
-
-class TypedDefinion:
-    name: str
-    members: List[Tuple[str, str]]
-
-    def __init__(self, name: str, members: List[Tuple[str, str]]) -> None:
-        self.name = name
-        self.members = members
-
-    def printable(self, replacements: Dict[str, str]) -> str:
-        output: List[str] = []
-
-        printable_name = f"class {self.name}(TypedDict):"
-        printable_members: List[str] = []
-        for key, value in self.members:
-            if value in replacements:
-                value = replacements[value]
-
-            printable_members.append(" " * INDENTATION + f"{key}: {value}")
-
-        output += [printable_name, *printable_members]
-
-        return "\n".join(output)
-
-    def __repr__(self) -> str:
-        return f"<TypedDefinion ({self.name})>"
-
-    def __eq__(self, other: Any) -> bool:
-        """ Only compares the members and ignores the order """
-        if self.__class__ != other.__class__:
-            return False
-        assert isinstance(other, self.__class__)
-
-        self_members = sorted(self.members)
-        other_members = sorted(other.members)
-
-        return self_members == other_members
-
-
-class NestedDictDef:
-    name: str
-
-    def __init__(self, name: str) -> None:
-        self.name = name
-
-    def __str__(self) -> str:
-        return self.name
-
-    def __repr__(self) -> str:
-        return f"<NestedDictDef ({self.name})>"
 
 
 def convert(
@@ -148,16 +88,11 @@ def convert(
     output = ""
 
     if show_imports:
-        output += "\n".join(
-            [
-                f"from typing import {', '.join(sorted(typing_imports))}",
-                "",
-                "from typing_extensions import TypedDict",
-                "",
-                "",
-                "",
-            ]
-        )
+        if typing_imports:
+            output += "\n".join(
+                [f"from typing import {', '.join(sorted(typing_imports))}", "", ""]
+            )
+        output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
 
     output += "\n\n".join(d.printable(replacements) for d in definitions)
 
