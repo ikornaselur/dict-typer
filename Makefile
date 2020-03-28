@@ -6,10 +6,15 @@ flake8:
 
 lint: mypy flake8
 
-test:
+test: unit_test integration_test e2e_test
+
+unit_test:
 	poetry run pytest tests/unit -xvvs
 
-test_e2e:
+integration_test:
+	poetry run pytest tests/integration -xvvs
+
+e2e_test:
 	poetry run pytest tests/e2e -xvvs
 
 test_%:
