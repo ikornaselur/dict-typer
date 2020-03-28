@@ -19,6 +19,7 @@ imagine it's a response we get from an api. We can plug it in like this:
 ```python
 from project.types import RootType
 
+
 def get_from_api() -> RootType:
     pass
 
@@ -29,18 +30,23 @@ def run() -> None:
     test1 = response["nested_dict"]["number"] + 1
     test2 = response["nested_dict"]["string"] + 1
     test3 = response["nested_dict"]["non_existant"] + 1
+    for item in response["optional_items"]:
+        print(item + 1)
 ```
 
 and if we run mypy on this
 
 ```shell
--> % p run mypy test.py
-test.py:11: error: Unsupported operand types for + ("str" and "int")
-test.py:12: error: TypedDict "NestedDictType" has no key 'non_existant'
-Found 2 errors in 1 file (checked 1 source file)
+-> % poetry run mypy test.py
+test.py:43: error: Unsupported operand types for + ("str" and "int")
+test.py:44: error: TypedDict "NestedDictType" has no key 'non_existant'
+test.py:46: error: Unsupported operand types for + ("None" and "int")
+test.py:46: error: Unsupported operand types for + ("str" and "int")
+test.py:46: note: Left operand is of type "Union[None, int, str]"
+Found 4 errors in 1 file (checked 1 source file)
 ```
 
-it will immediately detect two issues!
+it will immediately detect four issues!
 
 I also want to use this project to learn more about analysing code, making sure
 the project is well tested so that it's easy to experiment and try different
@@ -110,10 +116,12 @@ invalid keys.
         "string": "more values"
       }
     }
-  }
+  },
+  "nested_invalid": { "numeric-id": 123, "from": "far away" },
+  "optional_items": [1, 2, "3", "4", null, 5, 6, null]
 }
 
--> % cat .example.json | p run dt --imports
+-> % cat .example.json | poetry run dt --imports
 from typing import List, Union
 
 from typing_extensions import TypedDict
@@ -123,15 +131,16 @@ class NestedDictType(TypedDict):
     number: int
     string: str
 
-class Level3Type(TypedDict):
-    number: int
-    string: str
-
 class Level2Type(TypedDict):
-    level3: Level3Type
+    level3: NestedDictType
 
 class MultipeLevelsType(TypedDict):
     level2: Level2Type
+
+NestedInvalidType = TypedDict("NestedInvalidType", {
+    "numeric-id": int,
+    "from": str,
+})
 
 class RootType(TypedDict):
     number_int: int
@@ -142,6 +151,8 @@ class RootType(TypedDict):
     nested_dict: NestedDictType
     same_nested_dict: NestedDictType
     multipe_levels: MultipeLevelsType
+    nested_invalid: NestedInvalidType
+    optional_items: List[Union[None, int, str]]
 ```
 
 ### Calling from Python
@@ -167,7 +178,9 @@ In [1]: source = {
    ...:         "string": "more values"
    ...:       }
    ...:     }
-   ...:   }
+   ...:   },
+   ...:   "nested_invalid": { "numeric-id": 123, "from": "far away" },
+   ...:   "optional_items": [1, 2, "3", "4", None, 5, 6, None]
    ...: }
    ...:
 
@@ -183,15 +196,16 @@ class NestedDictType(TypedDict):
     number: int
     string: str
 
-class Level3Type(TypedDict):
-    number: int
-    string: str
-
 class Level2Type(TypedDict):
-    level3: Level3Type
+    level3: NestedDictType
 
 class MultipeLevelsType(TypedDict):
     level2: Level2Type
+
+NestedInvalidType = TypedDict("NestedInvalidType", {
+    "numeric-id": int,
+    "from": str,
+})
 
 class RootType(TypedDict):
     number_int: int
@@ -202,4 +216,6 @@ class RootType(TypedDict):
     nested_dict: NestedDictType
     same_nested_dict: NestedDictType
     multipe_levels: MultipeLevelsType
-  ```
+    nested_invalid: NestedInvalidType
+    optional_items: List[Union[None, int, str]]
+```
