@@ -33,7 +33,7 @@ class TypedDefinion:
             if value in replacements:
                 value = replacements[value]
 
-            printable_members.append(f'{" " * self.indentation}"{key}": {value}')
+            printable_members.append(f'{" " * self.indentation}"{key}": {value},')
 
         output += [printable_name_start, *printable_members, printable_name_end]
 

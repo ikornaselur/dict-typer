@@ -20,6 +20,10 @@ TEST_SOURCE = {
         "second": {3, 4},
         "third": {5, 6},
     },
+    "nestedInvalid": {
+        "foo-bar": "string",
+        "from": "far away",
+    }
 }
 # fmt: on
 

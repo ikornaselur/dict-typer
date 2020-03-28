@@ -2,12 +2,13 @@ from dict_typer import convert
 
 
 def test_convert_with_invalid_key_names() -> None:
-    source = {"invalid-key": 123}
+    source = {"invalid-key": 123, "from": "far away"}
 
     # fmt: off
     expected = "\n".join([
         'RootType = TypedDict("RootType", {',
-        '    "invalid-key": int',
+        '    "invalid-key": int,',
+        '    "from": str,',
         '})'
     ])
     # fmt: on
@@ -24,7 +25,7 @@ def test_convert_with_invalid_key_names_nested() -> None:
         "    id: int",
         "",
         'RootType = TypedDict("RootType", {',
-        '    "invalid-key": InvalidKeyType',
+        '    "invalid-key": InvalidKeyType,',
         '})'
     ])
     # fmt: on
