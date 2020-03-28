@@ -148,16 +148,11 @@ def convert(
     output = ""
 
     if show_imports:
-        output += "\n".join(
-            [
-                f"from typing import {', '.join(sorted(typing_imports))}",
-                "",
-                "from typing_extensions import TypedDict",
-                "",
-                "",
-                "",
-            ]
-        )
+        if typing_imports:
+            output += "\n".join(
+                [f"from typing import {', '.join(sorted(typing_imports))}", "", ""]
+            )
+        output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
 
     output += "\n\n".join(d.printable(replacements) for d in definitions)
 

@@ -45,3 +45,22 @@ def test_convert_optionally_adds_imports_with_nested_defs() -> None:
     # fmt: on
 
     assert convert(source, show_imports=True) == expected
+
+
+def test_convert_imports_with_no_typing_imports() -> None:
+    source = {"id": 10, "value": "value"}
+
+    # fmt off
+    expected = "\n".join(
+        [
+            "from typing_extensions import TypedDict",
+            "",
+            "",
+            "class RootType(TypedDict):",
+            "    id: int",
+            "    value: str",
+        ]
+    )
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
