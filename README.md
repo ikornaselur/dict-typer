@@ -1,6 +1,7 @@
 # Dict-Typer
 
-A simple tool to take a json dictionary instance and convert it into Python TypedDict class definitions
+A simple tool to take a json dictionary instance and convert it into Python
+TypedDict class definitions
 
 ## Why is this useful?
 
@@ -44,6 +45,43 @@ it will immediately detect two issues!
 I also want to use this project to learn more about analysing code, making sure
 the project is well tested so that it's easy to experiment and try different
 approaches.
+
+## TypeDict definitions
+
+There are two ways to define a TypedDict, the primary one that uses the class
+based structure, as seen in the examples here. It's easier to read, but it has
+a limitation that the each key has to be avalid identifier and not a reserved
+keyword. Normally that's not an issue, but if you have for example, the
+following data
+
+```json
+{
+    "numeric-id": 123,
+    "from": "far away",
+}
+```
+
+which is valid json, but has the invalid identifier `numeric-id` and reserved
+keyword `from`, meaning the definition
+
+```python
+class RootType(TypedDict):
+    numeric-id: int
+    from: str
+```
+
+is invalid. In detected cases, dict-typer will use an [alternative
+way](https://www.python.org/dev/peps/pep-0589/#alternative-syntax) to define
+those types, looking like this
+
+```python
+RootType = TypedDict('TypedDict', {'numeric-id': int, 'from': str'})
+```
+
+which is not as readable, but valid.
+
+dict-typer by default only uses the alternative definition for the types with
+invalid keys.
 
 ## Examples
 
