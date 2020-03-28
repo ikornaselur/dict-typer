@@ -19,5 +19,7 @@
         "string": "more values"
       }
     }
-  }
+  },
+  "nested_invalid": { "numeric-id": 123, "from": "far away" },
+  "optional_items": [1, 2, "3", "4", null, 5, 6, null]
 }

@@ -37,3 +37,30 @@ def test_convert_builtins() -> None:
     # fmt: on
 
     assert convert(source) == expected
+
+
+def test_convert_none() -> None:
+    source = {"value": None}
+
+    # fmt: off
+    expected = "\n".join([
+        "class RootType(TypedDict):",
+        "    value: None",
+    ])
+    # fmt: on
+
+    assert convert(source) == expected
+
+
+def test_convert_list_with_none_as_optional() -> None:
+    source = {"items": [1, 2, None, 3], "mixedItems": [1, "2", None, "4", 5]}
+
+    # fmt: off
+    expected = "\n".join([
+        "class RootType(TypedDict):",
+        "    items: List[Union[None, int]]",
+        "    mixedItems: List[Union[None, int, str]]",
+    ])
+    # fmt: on
+
+    assert convert(source) == expected
