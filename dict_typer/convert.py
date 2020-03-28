@@ -81,6 +81,9 @@ def convert(
             typing_imports.add("Union")
             return f"{sequence_type}[{union_type}]"
 
+        if item is None:
+            return "None"
+
         raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
 
     convert_dict(f"{root_type_name}{type_postfix}", source)
