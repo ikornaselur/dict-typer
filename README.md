@@ -52,6 +52,25 @@ I also want to use this project to learn more about analysing code, making sure
 the project is well tested so that it's easy to experiment and try different
 approaches.
 
+## Usage
+
+Either supply a path to a file or pipe json output to `dict-typer`
+
+```help
+-> % dict-typer --help
+Usage: dict-typer [OPTIONS] [FILE]...
+
+Options:
+  -i, --show-imports  Show the typing imports required
+  --help              Show this message and exit.
+
+-> % dict-typer -i ./.example.json
+...
+
+-> % curl example.com/test.json | dict-typer -i
+...
+```
+
 ## TypeDict definitions
 
 There are two ways to define a TypedDict, the primary one that uses the class
@@ -139,7 +158,7 @@ RootType = List[Union[RootItemType, float, int, str]]
   "optional_items": [1, 2, "3", "4", null, 5, 6, null]
 }
 
--> % cat .example.json | poetry run dt --imports
+-> % cat .example.json | dict-typer --show-imports
 from typing import List, Union
 
 from typing_extensions import TypedDict
