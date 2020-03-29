@@ -1,6 +1,7 @@
 import json
+from typing import Any, Dict, List, Union
+
 import pytest
-from typing import Dict, List, Union, Any
 
 from dict_typer import convert
 
