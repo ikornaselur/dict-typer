@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "A simple library to take data and turn it into python typing definitions."
 authors = ["Axel <dict.typer@absalon.is>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/ikornaselur/dict-typer"
 
 [tool.poetry.dependencies]
 python = "^3.6"
