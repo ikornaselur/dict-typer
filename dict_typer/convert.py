@@ -1,6 +1,5 @@
 from typing import Any, Dict, List, Set, Union
 
-from dict_typer.exceptions import ConvertException
 from dict_typer.models import NestedDictDef, TypedDefinion
 from dict_typer.utils import key_to_class_name
 
@@ -13,14 +12,26 @@ def convert(
     type_postfix: str = "Type",
     show_imports: bool = False,
 ) -> str:
-    if isinstance(source, list):
-        raise ConvertException("Convert doesn't support list yet")
-
     source = source.copy()  # Copy the source as it will be modified
 
     typing_imports: Set[str] = set()
     definitions: List[TypedDefinion] = []
     replacements: Dict[str, str] = {}
+
+    def convert_list(key: str, l: List) -> None:
+        type_idx = 0
+        for idx, item in enumerate(l):
+            if isinstance(item, dict):
+                nested_type_name = f"{key_to_class_name(key)}Item{type_postfix}"
+                if type_idx:
+                    nested_type_name += str(type_idx)
+
+                converted_type_name = convert_dict(nested_type_name, item)
+
+                if converted_type_name == nested_type_name:
+                    type_idx += 1
+
+                l[idx] = NestedDictDef(name=converted_type_name)
 
     def convert_dict(type_name: str, d: Dict) -> str:
         for key, value in d.items():
@@ -29,19 +40,7 @@ def convert(
                 convert_dict(nested_type_name, value)
                 d[key] = NestedDictDef(name=nested_type_name)
             elif isinstance(value, list):
-                type_idx = 0
-                for idx, item in enumerate(value):
-                    if isinstance(item, dict):
-                        nested_type_name = f"{key_to_class_name(key)}ItemType"
-                        if type_idx:
-                            nested_type_name += str(type_idx)
-
-                        converted_type_name = convert_dict(nested_type_name, item)
-
-                        if converted_type_name == nested_type_name:
-                            type_idx += 1
-
-                        value[idx] = NestedDictDef(name=converted_type_name)
+                convert_list(key, value)
 
         members = []
         for key, value in d.items():
@@ -86,7 +85,10 @@ def convert(
 
         raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
 
-    convert_dict(f"{root_type_name}{type_postfix}", source)
+    if isinstance(source, dict):
+        convert_dict(f"{root_type_name}{type_postfix}", source)
+    else:
+        convert_list(f"{root_type_name}", source)
 
     output = ""
 
@@ -98,5 +100,11 @@ def convert(
         output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
 
     output += "\n\n".join(d.printable(replacements) for d in definitions)
+
+    if isinstance(source, list):
+        # When the root is a list, add a type alias for the list
+        if len(output):
+            output += "\n\n"
+        output += f"{root_type_name}{type_postfix} = {get_type(source)}"
 
     return output
