@@ -10,10 +10,12 @@ from dict_typer.convert import convert
 
 @click.command()
 @click.option(
-    "-i", "--show-imports", is_flag=True, help="Show the typing imports required",
+    "--imports/--no-imports",
+    default=True,
+    help="Show imports at the top, default: True",
 )
 @click.argument("file", type=click.File("r"), nargs=-1)
-def cli(file: Tuple[io.TextIOWrapper], show_imports: bool = False) -> None:
+def cli(file: Tuple[io.TextIOWrapper], imports: bool = True) -> None:
     if len(file) > 1:
         raise click.BadArgumentUsage("Multiple files supplied, run with one at a time")
     if len(file) == 0:
@@ -31,6 +33,6 @@ def cli(file: Tuple[io.TextIOWrapper], show_imports: bool = False) -> None:
     except json.decoder.JSONDecodeError as e:
         raise click.UsageError(f"JSON serialisation error \n\n{e}")
 
-    output = convert(parsed, show_imports=show_imports)
+    output = convert(parsed, show_imports=imports)
 
     click.echo(output)

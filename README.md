@@ -61,13 +61,13 @@ Either supply a path to a file or pipe json output to `dict-typer`
 Usage: dict-typer [OPTIONS] [FILE]...
 
 Options:
-  -i, --show-imports  Show the typing imports required
-  --help              Show this message and exit.
+  --imports / --no-imports  Show imports at the top, default: True
+  --help                    Show this message and exit.
 
--> % dict-typer -i ./.example.json
+-> % dict-typer ./.example.json
 ...
 
--> % curl example.com/test.json | dict-typer -i
+-> % curl example.com/test.json | dict-typer
 ...
 ```
 
@@ -158,7 +158,7 @@ RootType = List[Union[RootItemType, float, int, str]]
   "optional_items": [1, 2, "3", "4", null, 5, 6, null]
 }
 
--> % cat .example.json | dict-typer --show-imports
+-> % cat .example.json | dict-typer
 from typing import List, Union
 
 from typing_extensions import TypedDict
