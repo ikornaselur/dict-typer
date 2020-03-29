@@ -2,7 +2,8 @@ import json
 import sys
 from typing import Dict
 
-from dict_typer.convert import ConvertException, convert
+from dict_typer.convert import convert
+from dict_typer.exceptions import ConvertException
 
 
 def dict_typer() -> None:

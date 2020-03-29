@@ -4,13 +4,18 @@ from typing import Dict, List, Union
 from dict_typer import convert
 
 
-def fixture(name: str) -> Union[Dict, List]:
-    with open(f"tests/integration/fixtures/{name}.json", "r") as f:
+def json_org_fixture(num: int) -> Union[Dict, List]:
+    with open(f"tests/integration/fixtures/json.org.example{num}.json", "r") as f:
         return json.load(f)
 
 
-def test_example1() -> None:
-    source = fixture("example1")
+def sitepoint_com_fixture(num: int) -> Union[Dict, List]:
+    with open(f"tests/integration/fixtures/sitepoint.com.example{num}.json", "r") as f:
+        return json.load(f)
+
+
+def test_json_org_example1() -> None:
+    source = json_org_fixture(1)
 
     # fmt: off
     expected = "\n".join([
@@ -51,8 +56,8 @@ def test_example1() -> None:
     assert convert(source, show_imports=True) == expected
 
 
-def test_example2() -> None:
-    source = fixture("example2")
+def test_json_org_example2() -> None:
+    source = json_org_fixture(2)
 
     # fmt: off
     expected = "\n".join([
@@ -81,8 +86,8 @@ def test_example2() -> None:
     assert convert(source, show_imports=True) == expected
 
 
-def test_example3() -> None:
-    source = fixture("example3")
+def test_json_org_example3() -> None:
+    source = json_org_fixture(3)
 
     # fmt: off
     expected = "\n".join([
@@ -126,8 +131,8 @@ def test_example3() -> None:
     assert convert(source, show_imports=True) == expected
 
 
-def test_example4() -> None:
-    source = fixture("example4")
+def test_json_org_example4() -> None:
+    source = json_org_fixture(4)
 
     # fmt: off
     expected = "\n".join([
@@ -238,8 +243,8 @@ def test_example4() -> None:
     assert convert(source, show_imports=True) == expected
 
 
-def test_example5() -> None:
-    source = fixture("example5")
+def test_json_org_example5() -> None:
+    source = json_org_fixture(5)
 
     # fmt: off
     expected = "\n".join([
@@ -261,6 +266,176 @@ def test_example5() -> None:
         "",
         "class RootType(TypedDict):",
         "    menu: MenuType",
+    ])
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
+
+
+def test_sitepoint_com_example1() -> None:
+    source = sitepoint_com_fixture(1)
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class CodeType(TypedDict):",
+        "    rgba: List[int]",
+        "    hex: str",
+        "",
+        "class ColorsItemType(TypedDict):",
+        "    color: str",
+        "    category: str",
+        "    type: str",
+        "    code: CodeType",
+        "",
+        "class ColorsItemType1(TypedDict):",
+        "    color: str",
+        "    category: str",
+        "    code: CodeType",
+        "",
+        "class RootType(TypedDict):",
+        "    colors: List[Union[ColorsItemType, ColorsItemType1]]",
+    ])
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
+
+
+def test_sitepoint_com_example2() -> None:
+    source = sitepoint_com_fixture(2)
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class MarkersItemType(TypedDict):",
+        "    name: str",
+        "    position: List[float]",
+        "",
+        "class MarkersItemType1(TypedDict):",
+        "    name: str",
+        "    location: List[float]",
+        "",
+        "class RootType(TypedDict):",
+        "    markers: List[Union[MarkersItemType, MarkersItemType1]]",
+    ])
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
+
+
+def test_sitepoint_com_example3() -> None:
+    source = sitepoint_com_fixture(3)
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class PageInfoType(TypedDict):",
+        "    totalResults: int",
+        "    resultsPerPage: int",
+        "",
+        "class IdType(TypedDict):",
+        "    kind: str",
+        "    channelId: str",
+        "",
+        "class ItemsItemType(TypedDict):",
+        "    kind: str",
+        "    etag: str",
+        "    id: IdType",
+        "",
+        "class IdType(TypedDict):",
+        "    kind: str",
+        "    videoId: str",
+        "",
+        "class RootType(TypedDict):",
+        "    kind: str",
+        "    etag: str",
+        "    nextPageToken: str",
+        "    regionCode: str",
+        "    pageInfo: PageInfoType",
+        "    items: List[ItemsItemType]",
+    ])
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
+
+
+def test_sitepoint_com_example4() -> None:
+    source = sitepoint_com_fixture(4)
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class HashtagsItemType(TypedDict):",
+        "    text: str",
+        "    indices: List[int]",
+        "",
+        "class UrlsItemType(TypedDict):",
+        "    url: str",
+        "    expanded_url: str",
+        "    display_url: str",
+        "    indices: List[int]",
+        "",
+        "class EntitiesType(TypedDict):",
+        "    hashtags: List[HashtagsItemType]",
+        "    symbols: List",
+        "    user_mentions: List",
+        "    urls: List[UrlsItemType]",
+        "",
+        "class UrlType(TypedDict):",
+        "    urls: List[UrlsItemType]",
+        "",
+        "class DescriptionType(TypedDict):",
+        "    urls: List",
+        "",
+        "class EntitiesType(TypedDict):",
+        "    url: UrlType",
+        "    description: DescriptionType",
+        "",
+        "class UserType(TypedDict):",
+        "    id: int",
+        "    id_str: str",
+        "    name: str",
+        "    screen_name: str",
+        "    location: str",
+        "    description: str",
+        "    url: str",
+        "    entities: EntitiesType",
+        "    protected: bool",
+        "    followers_count: int",
+        "    friends_count: int",
+        "    listed_count: int",
+        "    created_at: str",
+        "    favourites_count: int",
+        "    utc_offset: int",
+        "    time_zone: str",
+        "",
+        "class RootItemType(TypedDict):",
+        "    created_at: str",
+        "    id: int",
+        "    id_str: str",
+        "    text: str",
+        "    truncated: bool",
+        "    entities: EntitiesType",
+        "    source: str",
+        "    user: UserType",
+        "",
+        "RootType = List[RootItemType]",
     ])
     # fmt: on
 
