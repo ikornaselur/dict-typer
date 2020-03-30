@@ -57,3 +57,18 @@ def test_convert_imports_with_no_typing_imports() -> None:
     # fmt: on
 
     assert convert(source, show_imports=True) == expected
+
+
+def test_convert_imports_with_no_typed_dict() -> None:
+    source = [1, 2, 3]
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List",
+        "",
+        "",
+        "RootType = List[int]",
+    ])
+    # fmt: on
+
+    assert convert(source, show_imports=True) == expected
