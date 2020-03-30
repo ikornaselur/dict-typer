@@ -10,7 +10,7 @@ def convert(
     source: Union[Dict, List],
     root_type_name: str = "Root",
     type_postfix: str = "Type",
-    show_imports: bool = False,
+    show_imports: bool = True,
 ) -> str:
     source = source.copy()  # Copy the source as it will be modified
 

@@ -6,6 +6,11 @@ def test_convert_root_list_single_item() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootItemType(TypedDict):",
         "    id: int",
         "",
@@ -25,6 +30,11 @@ def test_convert_root_list_multiple_items() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootItemType(TypedDict):",
         "    id: int",
         "",
@@ -45,6 +55,11 @@ def test_convert_root_list_multiple_mixed_items() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootItemType(TypedDict):",
         "    id: int",
         "",
@@ -63,6 +78,9 @@ def test_convert_root_list_mixed_non_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List",
+        "",
+        "",
         "RootType = List[Union[float, int, str]]",
     ])
     # fmt: on

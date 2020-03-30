@@ -6,6 +6,9 @@ def test_convert_with_nested_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class NestType(TypedDict):",
         "    foo: str",
         "",
@@ -22,6 +25,9 @@ def test_convert_with_multiple_levels_nested_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class Level3Type(TypedDict):",
         "    level4: str",
         "",
@@ -44,6 +50,9 @@ def test_convert_with_multiple_nested_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class NestType(TypedDict):",
         "    foo: str",
         "",
@@ -68,6 +77,9 @@ def test_convert_with_repeated_nested_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class NestType(TypedDict):",
         "    foo: str",
         "",

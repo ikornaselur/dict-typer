@@ -6,6 +6,11 @@ def test_convert_with_empty_list() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    items: List",
     ])
@@ -19,6 +24,11 @@ def test_convert_with_simple_list() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    items: List[int]",
     ])
@@ -32,6 +42,11 @@ def test_convert_with_mixed_list() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    items: List[Union[float, int, str]]",
     ])

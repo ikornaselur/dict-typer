@@ -6,6 +6,11 @@ def test_convert_list_of_repeated_dicts() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class DictListItemType(TypedDict):",
         "    id: int",
         "",
@@ -22,6 +27,11 @@ def test_convert_list_of_mixed_dicts() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class DictListItemType(TypedDict):",
         "    foo: int",
         "",

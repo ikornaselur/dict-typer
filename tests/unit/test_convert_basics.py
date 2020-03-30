@@ -6,6 +6,9 @@ def test_convert_simple_json() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    id: int",
         "    item: str",
@@ -27,6 +30,9 @@ def test_convert_builtins() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    str_type: str",
         "    bytes_type: bytes",
@@ -44,6 +50,9 @@ def test_convert_none() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    value: None",
     ])
@@ -57,6 +66,11 @@ def test_convert_list_with_none_as_optional() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import List, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    items: List[Union[None, int]]",
         "    mixedItems: List[Union[None, int, str]]",

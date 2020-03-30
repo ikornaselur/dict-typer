@@ -6,6 +6,9 @@ def test_convert_with_invalid_key_names() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         'RootType = TypedDict("RootType", {',
         '    "invalid-key": int,',
         '    "from": str,',
@@ -21,6 +24,9 @@ def test_convert_with_invalid_key_names_nested() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class InvalidKeyType(TypedDict):",
         "    id: int",
         "",
