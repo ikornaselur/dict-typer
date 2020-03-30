@@ -46,7 +46,7 @@ def test_convert_imports_with_no_typing_imports() -> None:
     source = {"id": 10, "value": "value"}
 
     # fmt: off
-    expected = "\n".join( [
+    expected = "\n".join([
         "from typing_extensions import TypedDict",
         "",
         "",

@@ -89,6 +89,7 @@ def convert(
         convert_dict(f"{root_type_name}{type_postfix}", source)
     else:
         convert_list(f"{root_type_name}", source)
+        typing_imports.add("List")
 
     output = ""
 
@@ -97,14 +98,17 @@ def convert(
             output += "\n".join(
                 [f"from typing import {', '.join(sorted(typing_imports))}", "", ""]
             )
-        output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
+        if len(definitions):
+            output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
 
     output += "\n\n".join(d.printable(replacements) for d in definitions)
 
     if isinstance(source, list):
         # When the root is a list, add a type alias for the list
         if len(output):
-            output += "\n\n"
+            output += "\n"
+            if len(definitions):
+                output += "\n"
         output += f"{root_type_name}{type_postfix} = {get_type(source)}"
 
     return output
