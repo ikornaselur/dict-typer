@@ -7,6 +7,8 @@ import click
 
 from dict_typer.convert import convert
 
+__version__ = "0.1.2"
+
 
 @click.command()
 @click.option(
@@ -15,6 +17,7 @@ from dict_typer.convert import convert
     help="Show imports at the top, default: True",
 )
 @click.argument("file", type=click.File("r"), nargs=-1)
+@click.version_option(__version__)
 def cli(file: Tuple[io.TextIOWrapper], imports: bool = True) -> None:
     if len(file) > 1:
         raise click.BadArgumentUsage("Multiple files supplied, run with one at a time")
