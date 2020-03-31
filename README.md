@@ -168,16 +168,20 @@ class NestedDictType(TypedDict):
     number: int
     string: str
 
+
 class Level2Type(TypedDict):
     level3: NestedDictType
 
+
 class MultipeLevelsType(TypedDict):
     level2: Level2Type
+
 
 NestedInvalidType = TypedDict("NestedInvalidType", {
     "numeric-id": int,
     "from": str,
 })
+
 
 class RootType(TypedDict):
     number_int: int
@@ -233,16 +237,20 @@ class NestedDictType(TypedDict):
     number: int
     string: str
 
+
 class Level2Type(TypedDict):
     level3: NestedDictType
 
+
 class MultipeLevelsType(TypedDict):
     level2: Level2Type
+
 
 NestedInvalidType = TypedDict("NestedInvalidType", {
     "numeric-id": int,
     "from": str,
 })
+
 
 class RootType(TypedDict):
     number_int: int

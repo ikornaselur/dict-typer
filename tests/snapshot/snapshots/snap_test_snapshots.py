@@ -16,6 +16,7 @@ class GlossDefType(TypedDict):
     para: str
     GlossSeeAlso: List[str]
 
+
 class GlossEntryType(TypedDict):
     ID: str
     SortAs: str
@@ -25,16 +26,20 @@ class GlossEntryType(TypedDict):
     GlossDef: GlossDefType
     GlossSee: str
 
+
 class GlossListType(TypedDict):
     GlossEntry: GlossEntryType
+
 
 class GlossDivType(TypedDict):
     title: str
     GlossList: GlossListType
 
+
 class GlossaryType(TypedDict):
     title: str
     GlossDiv: GlossDivType
+
 
 class RootType(TypedDict):
     glossary: GlossaryType'''
@@ -48,13 +53,16 @@ class MenuitemItemType(TypedDict):
     value: str
     onclick: str
 
+
 class PopupType(TypedDict):
     menuitem: List[MenuitemItemType]
+
 
 class MenuType(TypedDict):
     id: str
     value: str
     popup: PopupType
+
 
 class RootType(TypedDict):
     menu: MenuType'''
@@ -68,12 +76,14 @@ class WindowType(TypedDict):
     width: int
     height: int
 
+
 class ImageType(TypedDict):
     src: str
     name: str
     hOffset: int
     vOffset: int
     alignment: str
+
 
 class TextType(TypedDict):
     data: str
@@ -85,11 +95,13 @@ class TextType(TypedDict):
     alignment: str
     onMouseUp: str
 
+
 class WidgetType(TypedDict):
     debug: str
     window: WindowType
     image: ImageType
     text: TextType
+
 
 class RootType(TypedDict):
     widget: WidgetType'''
@@ -144,20 +156,24 @@ InitParamType = TypedDict("InitParamType", {
     "maxUrlLength": int,
 })
 
+
 ServletItemType = TypedDict("ServletItemType", {
     "servlet-name": str,
     "servlet-class": str,
     "init-param": InitParamType,
 })
 
+
 class InitParamType(TypedDict):
     mailHost: str
     mailHostOverride: str
+
 
 ServletItemType1 = TypedDict("ServletItemType1", {
     "servlet-name": str,
     "servlet-class": str,
 })
+
 
 class InitParamType(TypedDict):
     templatePath: str
@@ -174,6 +190,7 @@ class InitParamType(TypedDict):
     adminGroupID: int
     betaServer: bool
 
+
 class ServletMappingType(TypedDict):
     cofaxCDS: str
     cofaxEmail: str
@@ -181,16 +198,19 @@ class ServletMappingType(TypedDict):
     fileServlet: str
     cofaxTools: str
 
+
 TaglibType = TypedDict("TaglibType", {
     "taglib-uri": str,
     "taglib-location": str,
 })
+
 
 WebAppType = TypedDict("WebAppType", {
     "servlet": List[Union[ServletItemType, ServletItemType1]],
     "servlet-mapping": ServletMappingType,
     "taglib": TaglibType,
 })
+
 
 RootType = TypedDict("RootType", {
     "web-app": WebAppType,
@@ -204,13 +224,16 @@ from typing_extensions import TypedDict
 class ItemsItemType(TypedDict):
     id: str
 
+
 class ItemsItemType1(TypedDict):
     id: str
     label: str
 
+
 class MenuType(TypedDict):
     header: str
     items: List[Union[ItemsItemType, ItemsItemType1, None]]
+
 
 class RootType(TypedDict):
     menu: MenuType'''
@@ -224,16 +247,19 @@ class CodeType(TypedDict):
     rgba: List[int]
     hex: str
 
+
 class ColorsItemType(TypedDict):
     color: str
     category: str
     type: str
     code: CodeType
 
+
 class ColorsItemType1(TypedDict):
     color: str
     category: str
     code: CodeType
+
 
 class RootType(TypedDict):
     colors: List[Union[ColorsItemType, ColorsItemType1]]'''
@@ -247,9 +273,11 @@ class MarkersItemType(TypedDict):
     name: str
     position: List[float]
 
+
 class MarkersItemType1(TypedDict):
     name: str
     location: List[float]
+
 
 class RootType(TypedDict):
     markers: List[Union[MarkersItemType, MarkersItemType1]]'''
@@ -263,18 +291,22 @@ class PageInfoType(TypedDict):
     totalResults: int
     resultsPerPage: int
 
+
 class IdType(TypedDict):
     kind: str
     channelId: str
+
 
 class ItemsItemType(TypedDict):
     kind: str
     etag: str
     id: IdType
 
+
 class IdType(TypedDict):
     kind: str
     videoId: str
+
 
 class RootType(TypedDict):
     kind: str
@@ -293,11 +325,13 @@ class HashtagsItemType(TypedDict):
     text: str
     indices: List[int]
 
+
 class UrlsItemType(TypedDict):
     url: str
     expanded_url: str
     display_url: str
     indices: List[int]
+
 
 class EntitiesType(TypedDict):
     hashtags: List[HashtagsItemType]
@@ -305,15 +339,19 @@ class EntitiesType(TypedDict):
     user_mentions: List
     urls: List[UrlsItemType]
 
+
 class UrlType(TypedDict):
     urls: List[UrlsItemType]
+
 
 class DescriptionType(TypedDict):
     urls: List
 
+
 class EntitiesType(TypedDict):
     url: UrlType
     description: DescriptionType
+
 
 class UserType(TypedDict):
     id: int
@@ -333,6 +371,7 @@ class UserType(TypedDict):
     utc_offset: int
     time_zone: str
 
+
 class RootItemType(TypedDict):
     created_at: str
     id: int
@@ -342,5 +381,6 @@ class RootItemType(TypedDict):
     entities: EntitiesType
     source: str
     user: UserType
+
 
 RootType = List[RootItemType]'''

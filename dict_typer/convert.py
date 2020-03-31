@@ -106,14 +106,14 @@ def convert(
         if len(definitions):
             output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
 
-    output += "\n\n".join(d.printable(replacements) for d in definitions)
+    output += "\n\n\n".join(d.printable(replacements) for d in definitions)
 
     if isinstance(source, list):
         # When the root is a list, add a type alias for the list
         if len(output):
             output += "\n"
             if len(definitions):
-                output += "\n"
+                output += "\n\n"
         output += f"{root_type_name}{type_postfix} = {get_type(source)}"
 
     return output

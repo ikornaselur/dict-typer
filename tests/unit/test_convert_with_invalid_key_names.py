@@ -30,6 +30,7 @@ def test_convert_with_invalid_key_names_nested() -> None:
         "class InvalidKeyType(TypedDict):",
         "    id: int",
         "",
+        "",
         'RootType = TypedDict("RootType", {',
         '    "invalid-key": InvalidKeyType,',
         '})'

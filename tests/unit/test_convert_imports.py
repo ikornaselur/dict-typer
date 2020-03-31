@@ -33,6 +33,7 @@ def test_convert_optionally_adds_imports_with_nested_defs() -> None:
         "class NestType(TypedDict):",
         "    itemsTuple: Tuple[Union[Set[Union[float, int]], int]]",
         "",
+        "",
         "class RootType(TypedDict):",
         "    itemsList: List[int]",
         "    nest: NestType",

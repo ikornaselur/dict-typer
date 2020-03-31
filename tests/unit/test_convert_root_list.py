@@ -14,6 +14,7 @@ def test_convert_root_list_single_item() -> None:
         "class RootItemType(TypedDict):",
         "    id: int",
         "",
+        "",
         "RootType = List[RootItemType]",
     ])
     # fmt: on
@@ -37,6 +38,7 @@ def test_convert_root_list_multiple_items() -> None:
         "",
         "class RootItemType(TypedDict):",
         "    id: int",
+        "",
         "",
         "RootType = List[RootItemType]",
     ])
@@ -63,8 +65,10 @@ def test_convert_root_list_multiple_mixed_items() -> None:
         "class RootItemType(TypedDict):",
         "    id: int",
         "",
+        "",
         "class RootItemType1(TypedDict):",
         "    value: str",
+        "",
         "",
         "RootType = List[Union[RootItemType, RootItemType1]]",
     ])
