@@ -93,7 +93,8 @@ def convert(
         convert_dict(f"{root_type_name}{type_postfix}", source)
     else:
         convert_list(f"{root_type_name}", source)
-        typing_imports.add("List")
+        # Run get type to add imports
+        get_type(source)
 
     output = ""
 

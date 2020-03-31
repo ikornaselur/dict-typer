@@ -55,7 +55,7 @@ def test_convert_root_list_multiple_mixed_items() -> None:
 
     # fmt: off
     expected = "\n".join([
-        "from typing import List",
+        "from typing import List, Union",
         "",
         "from typing_extensions import TypedDict",
         "",
@@ -78,7 +78,7 @@ def test_convert_root_list_mixed_non_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
-        "from typing import List",
+        "from typing import List, Union",
         "",
         "",
         "RootType = List[Union[float, int, str]]",
