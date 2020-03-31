@@ -6,7 +6,7 @@ flake8:
 
 lint: mypy flake8
 
-test: unit_test integration_test e2e_test
+test: unit_test snapshot_test e2e_test
 
 unit_test:
 	poetry run pytest tests/unit -xvvs

@@ -6,6 +6,11 @@ def test_convert_with_empty_set() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import Set",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    items: Set",
     ])
@@ -19,6 +24,11 @@ def test_convert_with_simple_set() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import Set",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    items: Set[int]",
     ])
@@ -32,6 +42,11 @@ def test_convert_with_mixed_set() -> None:
 
     # fmt: off
     expected = "\n".join([
+        "from typing import Set, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
         "class RootType(TypedDict):",
         "    items: Set[Union[float, int, str]]",
     ])

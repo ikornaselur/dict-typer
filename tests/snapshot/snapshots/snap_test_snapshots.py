@@ -7,7 +7,12 @@ from snapshottest import Snapshot
 
 snapshots = Snapshot()
 
-snapshots['test_snapshots[json.org.example1] 1'] = '''class GlossDefType(TypedDict):
+snapshots['test_snapshots[json.org.example1] 1'] = '''from typing import List
+
+from typing_extensions import TypedDict
+
+
+class GlossDefType(TypedDict):
     para: str
     GlossSeeAlso: List[str]
 
@@ -34,7 +39,12 @@ class GlossaryType(TypedDict):
 class RootType(TypedDict):
     glossary: GlossaryType'''
 
-snapshots['test_snapshots[json.org.example2] 1'] = '''class MenuitemItemType(TypedDict):
+snapshots['test_snapshots[json.org.example2] 1'] = '''from typing import List
+
+from typing_extensions import TypedDict
+
+
+class MenuitemItemType(TypedDict):
     value: str
     onclick: str
 
@@ -49,7 +59,10 @@ class MenuType(TypedDict):
 class RootType(TypedDict):
     menu: MenuType'''
 
-snapshots['test_snapshots[json.org.example3] 1'] = '''class WindowType(TypedDict):
+snapshots['test_snapshots[json.org.example3] 1'] = '''from typing_extensions import TypedDict
+
+
+class WindowType(TypedDict):
     title: str
     name: str
     width: int
@@ -81,7 +94,12 @@ class WidgetType(TypedDict):
 class RootType(TypedDict):
     widget: WidgetType'''
 
-snapshots['test_snapshots[json.org.example4] 1'] = '''InitParamType = TypedDict("InitParamType", {
+snapshots['test_snapshots[json.org.example4] 1'] = '''from typing import List, Union
+
+from typing_extensions import TypedDict
+
+
+InitParamType = TypedDict("InitParamType", {
     "configGlossary:installationAt": str,
     "configGlossary:adminEmail": str,
     "configGlossary:poweredBy": str,
@@ -178,7 +196,12 @@ RootType = TypedDict("RootType", {
     "web-app": WebAppType,
 })'''
 
-snapshots['test_snapshots[json.org.example5] 1'] = '''class ItemsItemType(TypedDict):
+snapshots['test_snapshots[json.org.example5] 1'] = '''from typing import List, Union
+
+from typing_extensions import TypedDict
+
+
+class ItemsItemType(TypedDict):
     id: str
 
 class ItemsItemType1(TypedDict):
@@ -192,7 +215,12 @@ class MenuType(TypedDict):
 class RootType(TypedDict):
     menu: MenuType'''
 
-snapshots['test_snapshots[sitepoint.com.example1] 1'] = '''class CodeType(TypedDict):
+snapshots['test_snapshots[sitepoint.com.example1] 1'] = '''from typing import List, Union
+
+from typing_extensions import TypedDict
+
+
+class CodeType(TypedDict):
     rgba: List[int]
     hex: str
 
@@ -210,7 +238,12 @@ class ColorsItemType1(TypedDict):
 class RootType(TypedDict):
     colors: List[Union[ColorsItemType, ColorsItemType1]]'''
 
-snapshots['test_snapshots[sitepoint.com.example2] 1'] = '''class MarkersItemType(TypedDict):
+snapshots['test_snapshots[sitepoint.com.example2] 1'] = '''from typing import List, Union
+
+from typing_extensions import TypedDict
+
+
+class MarkersItemType(TypedDict):
     name: str
     position: List[float]
 
@@ -221,7 +254,12 @@ class MarkersItemType1(TypedDict):
 class RootType(TypedDict):
     markers: List[Union[MarkersItemType, MarkersItemType1]]'''
 
-snapshots['test_snapshots[sitepoint.com.example3] 1'] = '''class PageInfoType(TypedDict):
+snapshots['test_snapshots[sitepoint.com.example3] 1'] = '''from typing import List
+
+from typing_extensions import TypedDict
+
+
+class PageInfoType(TypedDict):
     totalResults: int
     resultsPerPage: int
 
@@ -246,7 +284,12 @@ class RootType(TypedDict):
     pageInfo: PageInfoType
     items: List[ItemsItemType]'''
 
-snapshots['test_snapshots[sitepoint.com.example4] 1'] = '''class HashtagsItemType(TypedDict):
+snapshots['test_snapshots[sitepoint.com.example4] 1'] = '''from typing import List
+
+from typing_extensions import TypedDict
+
+
+class HashtagsItemType(TypedDict):
     text: str
     indices: List[int]
 

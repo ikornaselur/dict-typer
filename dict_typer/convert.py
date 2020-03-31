@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Set, Union
 
+from dict_typer.exceptions import ConvertException
 from dict_typer.models import NestedDictDef, TypedDefinion
 from dict_typer.utils import key_to_class_name
 
@@ -10,8 +11,11 @@ def convert(
     source: Union[Dict, List],
     root_type_name: str = "Root",
     type_postfix: str = "Type",
-    show_imports: bool = False,
+    show_imports: bool = True,
 ) -> str:
+    if not isinstance(source, (list, dict)):
+        raise ConvertException(f"Unsupported source type: {type(source)}")
+
     source = source.copy()  # Copy the source as it will be modified
 
     typing_imports: Set[str] = set()
@@ -89,6 +93,8 @@ def convert(
         convert_dict(f"{root_type_name}{type_postfix}", source)
     else:
         convert_list(f"{root_type_name}", source)
+        # Run get type to add imports
+        get_type(source)
 
     output = ""
 
@@ -97,14 +103,17 @@ def convert(
             output += "\n".join(
                 [f"from typing import {', '.join(sorted(typing_imports))}", "", ""]
             )
-        output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
+        if len(definitions):
+            output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
 
     output += "\n\n".join(d.printable(replacements) for d in definitions)
 
     if isinstance(source, list):
         # When the root is a list, add a type alias for the list
         if len(output):
-            output += "\n\n"
+            output += "\n"
+            if len(definitions):
+                output += "\n"
         output += f"{root_type_name}{type_postfix} = {get_type(source)}"
 
     return output
