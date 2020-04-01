@@ -9,24 +9,24 @@ homepage = "https://github.com/ikornaselur/dict-typer"
 
 [tool.poetry.dependencies]
 python = "^3.6"
-typing_extensions = "^3.7.4"
 click = "^7.1.1"
 
 [tool.poetry.dev-dependencies]
-isort = "^4.3.21"
 black = "^19.10b0"
-ipdb = "^0.13.2"
-pdbpp = "^0.10.2"
-mypy = "^0.770"
-pytest = "^5.4.1"
 flake8 = "^3.7.9"
-flake8-builtins = "^1.5.2"
-flake8-isort = "^2.9.0"
-flake8-bugbear = "^20.1.4"
 flake8-black = "^0.1.1"
+flake8-bugbear = "^20.1.4"
+flake8-builtins = "^1.5.2"
 flake8-comprehensions = "^3.2.2"
+flake8-isort = "^2.9.0"
+ipdb = "^0.13.2"
+isort = "^4.3.21"
+mypy = "^0.770"
+pdbpp = "^0.10.2"
+pytest = "^5.4.1"
 pytest-clarity = "^0.3.0-alpha.0"
 snapshottest = "^0.5.1"
+typing_extensions = "^3.7.4"
 
 [tool.poetry.scripts]
 dict-typer = 'dict_typer:cli'

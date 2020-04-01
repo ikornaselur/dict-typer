@@ -646,7 +646,7 @@ python-versions = "*"
 version = "1.4.1"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Backported and Experimental Type Hints for Python 3.5+"
 name = "typing-extensions"
 optional = false
@@ -692,7 +692,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "669a1c5d87c5bdd2e0c2e325f1b52af03d3e0aea593f09247bd1610407a0cd67"
+content-hash = "99907d9780889d114356bbe19a316550ff919becc1f33343f1b92443b40256f0"
 python-versions = "^3.6"
 
 [metadata.files]
