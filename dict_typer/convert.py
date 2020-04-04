@@ -1,10 +1,25 @@
-from typing import Any, Dict, List, Set, Union
+from typing import Any, Dict, List, Set, Tuple, Type, Union
 
 from dict_typer.exceptions import ConvertException
 from dict_typer.models import NestedDictDef, TypedDefinion
 from dict_typer.utils import key_to_class_name
 
-BUILTINS = (str, bytes, int, float, complex)
+BASE_TYPES: Tuple[Type, ...] = (  # type: ignore
+    bool,
+    bytearray,
+    bytes,
+    complex,
+    enumerate,
+    float,
+    int,
+    memoryview,
+    range,
+    str,
+    type,
+    filter,
+    map,
+    zip,
+)
 
 
 def convert(
@@ -60,21 +75,26 @@ def convert(
             return type_def.name
 
     def get_type(item: Any) -> Any:
+        if item is None:
+            return "None"
+
         if isinstance(item, NestedDictDef):
             return item.name
 
-        if isinstance(item, BUILTINS):
+        if isinstance(item, BASE_TYPES):
             return type(item).__name__
 
-        if isinstance(item, (list, tuple, set)):
-            if isinstance(item, List):
+        if isinstance(item, (list, set, tuple, frozenset)):
+            if isinstance(item, list):
                 sequence_type = "List"
-            elif isinstance(item, Set):
+            elif isinstance(item, set):
                 sequence_type = "Set"
+            elif isinstance(item, frozenset):
+                sequence_type = "FrozenSet"
             else:
                 sequence_type = "Tuple"
-            typing_imports.add(sequence_type)
 
+            typing_imports.add(sequence_type)
             list_item_types = {get_type(x) for x in item}
             if len(list_item_types) == 0:
                 return sequence_type
@@ -84,8 +104,10 @@ def convert(
             typing_imports.add("Union")
             return f"{sequence_type}[{union_type}]"
 
-        if item is None:
-            return "None"
+        if isinstance(item, dict):
+            raise ConvertException(
+                "Unable to return type instance of dict, preprocess and use NestedDictDec"
+            )
 
         raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
 
