@@ -116,7 +116,7 @@ items. In these cases, a type alias is added as well to the output to capture
 the type of the list. For example, the list `[1, "2", 3.0, { "id": 123 }, {
 "id": 456 }]` will generate the following definitions:
 
-```
+```python
 from typing_extensions import TypedDict
 
 
