@@ -100,6 +100,11 @@ def convert(
                 return sequence_type
             if len(list_item_types) == 1:
                 return f"{sequence_type}[{list_item_types.pop()}]"
+            if len(list_item_types) == 2 and "None" in list_item_types:
+                list_item_types.discard("None")
+                typing_imports.add("Optional")
+                return f"{sequence_type}[Optional[{list_item_types.pop()}]]"
+
             union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
             typing_imports.add("Union")
             return f"{sequence_type}[{union_type}]"
