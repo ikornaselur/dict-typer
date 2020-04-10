@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Set, Tuple, Type, Union
 
 from dict_typer.exceptions import ConvertException
-from dict_typer.models import NestedDictDef, TypedDefinion
+from dict_typer.models import MemberDefinition, NestedDictDef, TypedDefinion
 from dict_typer.utils import key_to_class_name
 
 BASE_TYPES: Tuple[Type, ...] = (  # type: ignore
@@ -61,18 +61,23 @@ def convert(
             elif isinstance(value, list):
                 convert_list(key, value)
 
-        members = []
+        members: List[MemberDefinition] = []
         for key, value in d.items():
-            members.append((key, get_type(value)))
+            members.append(MemberDefinition(name=key, types=[get_type(value)]))
 
-        type_def = TypedDefinion(name=type_name, members=members)
-        existing = next((td for td in definitions if td == type_def), None)
-        if existing:
-            replacements[type_name] = existing.name
-            return existing.name
+        td: TypedDefinion
+        type_def = next((td for td in definitions if td.members == members), None)
+
+        if type_def:
+            replacements[type_name] = type_def.name
+            type_def.update_members(members)
         else:
+            type_def = TypedDefinion(name=type_name, members=members)
             definitions.append(type_def)
-            return type_def.name
+
+        typing_imports.update(type_def.get_imports())
+
+        return type_def.name
 
     def get_type(item: Any) -> Any:
         if item is None:

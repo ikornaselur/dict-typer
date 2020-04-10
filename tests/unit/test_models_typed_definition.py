@@ -1,8 +1,14 @@
-from dict_typer.models import TypedDefinion
+from dict_typer.models import MemberDefinition, TypedDefinion
 
 
 def test_typed_definition_printable_primary() -> None:
-    td = TypedDefinion(name="TestType", members=[("foo", "str"), ("bar", "int")])
+    td = TypedDefinion(
+        name="TestType",
+        members=[
+            MemberDefinition(name="foo", types=["str"]),
+            MemberDefinition(name="bar", types=["int"]),
+        ],
+    )
 
     # fmt: off
     expected = "\n".join([
@@ -16,7 +22,13 @@ def test_typed_definition_printable_primary() -> None:
 
 
 def test_typed_definition_printable_alternative() -> None:
-    td = TypedDefinion(name="TestType", members=[("foo", "str"), ("bar", "int")])
+    td = TypedDefinion(
+        name="TestType",
+        members=[
+            MemberDefinition(name="foo", types=["str"]),
+            MemberDefinition(name="bar", types=["int"]),
+        ],
+    )
 
     # fmt: off
     expected = "\n".join([
@@ -32,7 +44,11 @@ def test_typed_definition_printable_alternative() -> None:
 
 def test_typed_definition_printable_forces_alternative_if_invalid() -> None:
     td = TypedDefinion(
-        name="TestType", members=[("foo-bar", "str"), ("baz-qux", "int")]
+        name="TestType",
+        members=[
+            MemberDefinition(name="foo-bar", types=["str"]),
+            MemberDefinition(name="baz-qux", types=["int"]),
+        ],
     )
 
     # fmt: off

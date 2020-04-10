@@ -1,3 +1,5 @@
+import pytest
+
 from dict_typer import convert
 
 
@@ -32,17 +34,26 @@ def test_convert_not_optional_if_multiple_types_with_none() -> None:
 
 
 def test_convert_optional_combined_dicts() -> None:
-    source = [{"value": "foo"}, {"value": None}]
+    source = {
+        "owner": {"name": "foo", "age": 44},
+        "coOwner": {"name": "bar", "age": None},
+    }
 
     # fmt: off
     expected = "\n".join([
+        "from typing import Union",
+        "",
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootTypeItem(TypedDict):"
-        "    value: Optional[str]",
-        ""
-        "RootType = List[RootTypeItem]",
+        "class OwnerType(TypedDict):",
+        "    name: str",
+        "    age: Optional[int]",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    owner: OwnerType",
+        "    coOwner: OwnerType",
     ])
     # fmt: on
 
