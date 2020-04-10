@@ -1,5 +1,3 @@
-import pytest
-
 from dict_typer import convert
 
 
