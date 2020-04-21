@@ -39,7 +39,7 @@ def test_convert_optional_combined_dicts() -> None:
 
     # fmt: off
     expected = "\n".join([
-        "from typing import Union",
+        "from typing import Optional",
         "",
         "from typing_extensions import TypedDict",
         "",

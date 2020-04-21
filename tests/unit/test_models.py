@@ -129,8 +129,8 @@ def test_dict_entry_alternative_output() -> None:
     # fmt: off
     assert str(entry) == "\n".join([
         'RootType = TypedDict("RootType", {',
-        '    "foo": str',
-        '    "bar": int',
+        '    "foo": str,',
+        '    "bar": int,',
         '})',
     ])
     # fmt: on
