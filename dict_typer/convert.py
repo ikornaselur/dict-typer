@@ -1,12 +1,12 @@
-from typing import Any, Dict, List, Set, Tuple, Type, Union, Optional
+from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
 from dict_typer.exceptions import ConvertException
 from dict_typer.models import (
     DictEntry,
     EntryType,
     MemberEntry,
-    sub_members_to_string,
     sub_members_to_imports,
+    sub_members_to_string,
 )
 from dict_typer.utils import key_to_class_name
 

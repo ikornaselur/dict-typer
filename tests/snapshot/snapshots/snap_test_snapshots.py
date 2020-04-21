@@ -49,13 +49,13 @@ snapshots['test_snapshots[json.org.example2] 1'] = '''from typing import List
 from typing_extensions import TypedDict
 
 
-class MenuitemItemType(TypedDict):
+class MenuitemItem0Type(TypedDict):
     value: str
     onclick: str
 
 
 class PopupType(TypedDict):
-    menuitem: List[MenuitemItemType]
+    menuitem: List[MenuitemItem0Type]
 
 
 class MenuType(TypedDict):
@@ -157,10 +157,10 @@ InitParamType = TypedDict("InitParamType", {
 })
 
 
-ServletItemType = TypedDict("ServletItemType", {
+ServletItem0Type = TypedDict("ServletItem0Type", {
     "servlet-name": str,
     "servlet-class": str,
-    "init-param": InitParamType,
+    "init-param": Union[InitParamType, InitParamType, InitParamType],
 })
 
 
@@ -169,7 +169,7 @@ class InitParamType(TypedDict):
     mailHostOverride: str
 
 
-ServletItemType1 = TypedDict("ServletItemType1", {
+ServletItem2Type = TypedDict("ServletItem2Type", {
     "servlet-name": str,
     "servlet-class": str,
 })
@@ -206,7 +206,7 @@ TaglibType = TypedDict("TaglibType", {
 
 
 WebAppType = TypedDict("WebAppType", {
-    "servlet": List[Union[ServletItemType, ServletItemType1]],
+    "servlet": List[Union[ServletItem0Type, ServletItem2Type]],
     "servlet-mapping": ServletMappingType,
     "taglib": TaglibType,
 })
@@ -221,18 +221,18 @@ snapshots['test_snapshots[json.org.example5] 1'] = '''from typing import List, U
 from typing_extensions import TypedDict
 
 
-class ItemsItemType(TypedDict):
+class ItemsItem0Type(TypedDict):
     id: str
 
 
-class ItemsItemType1(TypedDict):
+class ItemsItem1Type(TypedDict):
     id: str
     label: str
 
 
 class MenuType(TypedDict):
     header: str
-    items: List[Union[ItemsItemType, ItemsItemType1, None]]
+    items: List[Union[ItemsItem0Type, ItemsItem1Type, None]]
 
 
 class RootType(TypedDict):
@@ -248,41 +248,41 @@ class CodeType(TypedDict):
     hex: str
 
 
-class ColorsItemType(TypedDict):
+class ColorsItem0Type(TypedDict):
     color: str
     category: str
     type: str
     code: CodeType
 
 
-class ColorsItemType1(TypedDict):
+class ColorsItem1Type(TypedDict):
     color: str
     category: str
     code: CodeType
 
 
 class RootType(TypedDict):
-    colors: List[Union[ColorsItemType, ColorsItemType1]]'''
+    colors: List[Union[ColorsItem0Type, ColorsItem1Type]]'''
 
 snapshots['test_snapshots[sitepoint.com.example2] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
 
-class MarkersItemType(TypedDict):
+class MarkersItem0Type(TypedDict):
     name: str
     position: List[float]
 
 
-class MarkersItemType1(TypedDict):
+class MarkersItem1Type(TypedDict):
     name: str
     location: List[float]
 
 
 class RootType(TypedDict):
-    markers: List[Union[MarkersItemType, MarkersItemType1]]'''
+    markers: List[Union[MarkersItem0Type, MarkersItem1Type]]'''
 
-snapshots['test_snapshots[sitepoint.com.example3] 1'] = '''from typing import List
+snapshots['test_snapshots[sitepoint.com.example3] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
@@ -297,10 +297,10 @@ class IdType(TypedDict):
     channelId: str
 
 
-class ItemsItemType(TypedDict):
+class ItemsItem0Type(TypedDict):
     kind: str
     etag: str
-    id: IdType
+    id: Union[IdType, IdType]
 
 
 class IdType(TypedDict):
@@ -314,19 +314,19 @@ class RootType(TypedDict):
     nextPageToken: str
     regionCode: str
     pageInfo: PageInfoType
-    items: List[ItemsItemType]'''
+    items: List[ItemsItem0Type]'''
 
 snapshots['test_snapshots[sitepoint.com.example4] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
 
-class HashtagsItemType(TypedDict):
+class HashtagsItem0Type(TypedDict):
     text: str
     indices: List[int]
 
 
-class UrlsItemType(TypedDict):
+class UrlsItem0Type(TypedDict):
     url: str
     expanded_url: str
     display_url: str
@@ -334,14 +334,14 @@ class UrlsItemType(TypedDict):
 
 
 class EntitiesType(TypedDict):
-    hashtags: List[HashtagsItemType]
+    hashtags: List[HashtagsItem0Type]
     symbols: List
     user_mentions: List
-    urls: List[UrlsItemType]
+    urls: List[UrlsItem0Type]
 
 
 class UrlType(TypedDict):
-    urls: Union[List, List[UrlsItemType]]
+    urls: Union[List, List[UrlsItem0Type]]
 
 
 class EntitiesType(TypedDict):
@@ -368,7 +368,7 @@ class UserType(TypedDict):
     time_zone: str
 
 
-class RootItemType(TypedDict):
+class RootItem0Type(TypedDict):
     created_at: str
     id: int
     id_str: str
@@ -379,4 +379,4 @@ class RootItemType(TypedDict):
     user: UserType
 
 
-RootType = List[RootItemType]'''
+RootType = List[RootItem0Type]'''

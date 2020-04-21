@@ -1,3 +1,5 @@
+import pytest
+
 from dict_typer import convert
 
 
@@ -98,6 +100,44 @@ def test_convert_with_repeated_nested_dict() -> None:
         "    nest: NestType",
         "    other_nest: NestType",
         "    unique_nest: UniqueNestType",
+    ])
+    # fmt: on
+
+    assert expected == convert(source)
+
+
+@pytest.mark.skip(reason="Known issue for later fixing")
+def test_convert_nested_overlapping_dict() -> None:
+    source = {
+        "items": [
+            {"id": {"foo": "foo", "primary": "bar"}},
+            {"id": {"foo": "baz", "secondary": "qux"}},
+        ]
+    }
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class IdType0(TypedDict):",
+        "    foo: str",
+        "    primary: str",
+        "",
+        "",
+        "class IdType1(TypedDict):",
+        "    foo: str",
+        "    secondary: str",
+        "",
+        "",
+        "class ItemsItem0Type(TypedDict):",
+        "    id: Union[IdType0, IdType1]",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    items: List[ItemsItem0Type]",
     ])
     # fmt: on
 
