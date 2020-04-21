@@ -2,6 +2,8 @@ from typing import Any, Dict, List, Optional, Set, Union
 
 from dict_typer.utils import is_valid_key
 
+KNOWN_TYPE_IMPORTS = ("List", "Tuple", "Set", "FrozenSet")
+
 
 class MemberDefinition:
     name: str
@@ -149,8 +151,32 @@ class MemberEntry:
         self.name = name
         self.sub_members = sub_members or set()
 
+    def get_imports(self) -> Set[str]:
+        imports = set()
+        if self.name in KNOWN_TYPE_IMPORTS:
+            imports.add(self.name)
+
+        for member in self.sub_members:
+            imports |= member.get_imports()
+
+        if len(self.sub_members) == 2 and "None" in (
+            sm.name for sm in self.sub_members
+        ):
+            imports.add("Optional")
+        elif len(self.sub_members) > 1:
+            imports.add("Union")
+
+        return imports
+
     def __hash__(self) -> int:
         return hash(str(self))
+
+    def __eq__(self, other: Any) -> bool:
+        if self.__class__ != other.__class__:
+            return False
+        assert isinstance(other, self.__class__)
+
+        return str(self) == str(other)
 
     def __repr__(self) -> str:
         return f"<MemberEntry ({self})>"
@@ -184,14 +210,14 @@ class DictEntry:
     """
 
     name: str
-    members: Dict[str, MemberEntry]
+    members: Dict[str, Union[MemberEntry, "DictEntry"]]
     indentation: int
     force_alternative: bool
 
     def __init__(
         self,
         name: str,
-        members: Optional[Dict[str, MemberEntry]],
+        members: Optional[Dict[str, Union[MemberEntry, "DictEntry"]]] = None,
         indentation: int = 4,
         force_alternative: bool = False,
     ) -> None:
@@ -199,6 +225,22 @@ class DictEntry:
         self.members = members or {}
         self.indentation = indentation
         self.force_alternative = force_alternative
+
+    def get_imports(self) -> Set[str]:
+        imports = set()
+        for member in self.members.values():
+            imports |= member.get_imports()
+        return imports
+
+    def __hash__(self) -> int:
+        return hash(str(self))
+
+    def __eq__(self, other: Any) -> bool:
+        if self.__class__ != other.__class__:
+            return False
+        assert isinstance(other, self.__class__)
+
+        return str(self) == str(other)
 
     def __repr__(self) -> str:
         return f"<DictEntry ({self})>"

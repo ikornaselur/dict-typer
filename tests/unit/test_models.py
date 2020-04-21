@@ -49,6 +49,39 @@ def test_member_entry_is_hashable_based_on_str_out() -> None:
     }
 
 
+def test_member_entry_get_imports() -> None:
+    just_list = MemberEntry("List")
+    just_list_one_item = MemberEntry("List", sub_members={MemberEntry("str")})
+    list_with_union = MemberEntry(
+        "List", sub_members={MemberEntry("str"), MemberEntry("int")}
+    )
+    list_with_optional = MemberEntry(
+        "List", sub_members={MemberEntry("str"), MemberEntry("None")}
+    )
+
+    assert just_list.get_imports() == {"List"}
+    assert just_list_one_item.get_imports() == {"List"}
+    assert list_with_union.get_imports() == {"List", "Union"}
+    assert list_with_optional.get_imports() == {"List", "Optional"}
+
+
+def test_member_entry_get_imports_from_sub_members() -> None:
+    sub_entry = DictEntry(
+        "NestedType",
+        members={
+            "foo": MemberEntry(
+                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+            )
+        },
+    )
+    entry = MemberEntry(
+        "List",
+        sub_members={sub_entry, MemberEntry("Set", sub_members={MemberEntry("int")})},
+    )
+
+    assert entry.get_imports() == {"List", "Union", "Set"}
+
+
 def test_dict_entry_base_output() -> None:
     entry = DictEntry(
         "RootType", members={"foo": MemberEntry("str"), "bar": MemberEntry("int")}
@@ -59,6 +92,25 @@ def test_dict_entry_base_output() -> None:
         "class RootType(TypedDict):",
         "    foo: str",
         "    bar: int",
+    ])
+    # fmt: on
+
+
+def test_dict_entry_nested_dicts() -> None:
+    sub_entry = DictEntry(
+        "NestedType",
+        members={
+            "foo": MemberEntry(
+                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+            )
+        },
+    )
+    entry = DictEntry("RootType", members={"sub": sub_entry})
+
+    # fmt: off
+    assert str(entry) == "\n".join([
+        "class RootType(TypedDict):",
+        "    sub: NestedType",
     ])
     # fmt: on
 
@@ -93,3 +145,32 @@ def test_dict_entry_with_member_entry() -> None:
     entry = MemberEntry("Set", sub_members={member_entry})
 
     assert str(entry) == "Set[List[SubType]]"
+
+
+def test_dict_entry_get_imports() -> None:
+    base_entry = DictEntry("RootType", members={"foo": MemberEntry("str")})
+    base_entry_with_list = DictEntry(
+        "RootType",
+        members={
+            "bar": MemberEntry(
+                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+            )
+        },
+    )
+
+    assert base_entry.get_imports() == set()
+    assert base_entry_with_list.get_imports() == {"List", "Union"}
+
+
+def test_dict_entry_get_imports_from_sub_members() -> None:
+    sub_entry = DictEntry(
+        "NestedType",
+        members={
+            "foo": MemberEntry(
+                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+            )
+        },
+    )
+    entry = DictEntry("RootType", members={"sub": sub_entry})
+
+    assert entry.get_imports() == {"List", "Union"}
