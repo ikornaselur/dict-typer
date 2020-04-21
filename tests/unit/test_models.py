@@ -44,6 +44,10 @@ def test_member_entry_is_hashable_based_on_str_out() -> None:
     assert hashed_list_int_1 == hashed_list_int_2
     assert hashed_list_int_1 != hashed_list_str
 
+    assert {MemberEntry("int"), MemberEntry("int"), MemberEntry("int")} == {
+        MemberEntry("int")
+    }
+
 
 def test_dict_entry_base_output() -> None:
     entry = DictEntry(

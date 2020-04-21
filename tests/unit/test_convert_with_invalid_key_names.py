@@ -16,7 +16,7 @@ def test_convert_with_invalid_key_names() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_invalid_key_names_nested() -> None:
@@ -37,4 +37,4 @@ def test_convert_with_invalid_key_names_nested() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)

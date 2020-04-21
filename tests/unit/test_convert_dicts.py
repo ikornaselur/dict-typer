@@ -18,7 +18,7 @@ def test_convert_with_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_multiple_levels_nested_dict() -> None:
@@ -46,7 +46,7 @@ def test_convert_with_multiple_levels_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_multiple_nested_dict() -> None:
@@ -71,7 +71,7 @@ def test_convert_with_multiple_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_repeated_nested_dict() -> None:
@@ -101,4 +101,4 @@ def test_convert_with_repeated_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)

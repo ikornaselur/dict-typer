@@ -16,7 +16,7 @@ def test_convert_with_empty_list() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_simple_list() -> None:
@@ -34,7 +34,7 @@ def test_convert_with_simple_list() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_mixed_list() -> None:
@@ -52,4 +52,4 @@ def test_convert_with_mixed_list() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)

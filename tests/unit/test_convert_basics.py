@@ -16,7 +16,7 @@ def test_convert_simple_json() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_base_types() -> None:
@@ -68,7 +68,7 @@ def test_convert_base_types() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_none() -> None:
@@ -84,4 +84,4 @@ def test_convert_none() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
