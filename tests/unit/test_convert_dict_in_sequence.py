@@ -51,3 +51,25 @@ def test_convert_list_of_mixed_dicts() -> None:
     # fmt: on
 
     assert convert(source) == expected
+
+
+def test_convert_list_of_repeated_dicts_different_types_combined() -> None:
+    source = {"dictList": [{"id": 123}, {"id": 456.0}, {"id": "789"}]}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List, Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class DictListItemType(TypedDict):",
+        "    id: Union[float, int, str]",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    dictList: List[DictListItemType]",
+    ])
+    # fmt: on
+
+    assert convert(source) == expected

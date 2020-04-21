@@ -85,22 +85,3 @@ def test_convert_none() -> None:
     # fmt: on
 
     assert convert(source) == expected
-
-
-def test_convert_list_with_none_as_optional() -> None:
-    source = {"items": [1, 2, None, 3], "mixedItems": [1, "2", None, "4", 5]}
-
-    # fmt: off
-    expected = "\n".join([
-        "from typing import List, Union",
-        "",
-        "from typing_extensions import TypedDict",
-        "",
-        "",
-        "class RootType(TypedDict):",
-        "    items: List[Union[None, int]]",
-        "    mixedItems: List[Union[None, int, str]]",
-    ])
-    # fmt: on
-
-    assert convert(source) == expected

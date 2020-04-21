@@ -316,7 +316,7 @@ class RootType(TypedDict):
     pageInfo: PageInfoType
     items: List[ItemsItemType]'''
 
-snapshots['test_snapshots[sitepoint.com.example4] 1'] = '''from typing import List
+snapshots['test_snapshots[sitepoint.com.example4] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
@@ -341,16 +341,12 @@ class EntitiesType(TypedDict):
 
 
 class UrlType(TypedDict):
-    urls: List[UrlsItemType]
-
-
-class DescriptionType(TypedDict):
-    urls: List
+    urls: Union[List, List[UrlsItemType]]
 
 
 class EntitiesType(TypedDict):
     url: UrlType
-    description: DescriptionType
+    description: UrlType
 
 
 class UserType(TypedDict):
