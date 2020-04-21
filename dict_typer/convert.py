@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
+from typing import Any, Dict, List, Set, Tuple, Type, Union
 
 from dict_typer.exceptions import ConvertException
 from dict_typer.models import (
