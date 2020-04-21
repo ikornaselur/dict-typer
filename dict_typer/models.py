@@ -132,6 +132,42 @@ class TypedDefinion:
         return set(self.members) == set(other.members)
 
 
+SubMembers = Set[Union["MemberEntry", "DictEntry"]]
+DictMembers = Dict[str, SubMembers]
+
+
+def sub_members_to_string(sub_members: SubMembers) -> str:
+    def get_member_value(item: Union["MemberEntry", "DictEntry"]) -> str:
+        """ Only reference DictEntry by name """
+        if isinstance(item, DictEntry):
+            return item.name
+        return str(item)
+
+    if len(sub_members) == 2 and "None" in (sm.name for sm in sub_members):
+        optional_member = next(sm for sm in sub_members if sm.name != "None")
+        return f"Optional[{get_member_value(optional_member)}]"
+    if len(sub_members) > 0:
+        sub_members_strs = sorted(get_member_value(sm) for sm in sub_members)
+        if len(sub_members_strs) == 1:
+            return str(sub_members_strs[0])
+        return f"Union[{', '.join(sub_members_strs)}]"
+    return ""
+
+
+def sub_members_to_imports(sub_members: SubMembers) -> Set[str]:
+    imports = set()
+
+    for member in sub_members:
+        imports |= member.get_imports()
+
+    if len(sub_members) == 2 and "None" in (sm.name for sm in sub_members):
+        imports.add("Optional")
+    elif len(sub_members) > 1:
+        imports.add("Union")
+
+    return imports
+
+
 class MemberEntry:
     """ A representation of a type with optional sub types
 
@@ -141,13 +177,9 @@ class MemberEntry:
     """
 
     name: str
-    sub_members: Set[Union["MemberEntry", "DictEntry"]]
+    sub_members: SubMembers
 
-    def __init__(
-        self,
-        name: str,
-        sub_members: Optional[Set[Union["MemberEntry", "DictEntry"]]] = None,
-    ) -> None:
+    def __init__(self, name: str, sub_members: Optional[SubMembers] = None,) -> None:
         self.name = name
         self.sub_members = sub_members or set()
 
@@ -156,17 +188,7 @@ class MemberEntry:
         if self.name in KNOWN_TYPE_IMPORTS:
             imports.add(self.name)
 
-        for member in self.sub_members:
-            imports |= member.get_imports()
-
-        if len(self.sub_members) == 2 and "None" in (
-            sm.name for sm in self.sub_members
-        ):
-            imports.add("Optional")
-        elif len(self.sub_members) > 1:
-            imports.add("Union")
-
-        return imports
+        return imports | sub_members_to_imports(self.sub_members)
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -182,22 +204,9 @@ class MemberEntry:
         return f"<MemberEntry ({self})>"
 
     def __str__(self) -> str:
-        def get_member_value(item: Union["MemberEntry", "DictEntry"]) -> str:
-            """ Only reference DictEntry by name """
-            if isinstance(item, DictEntry):
-                return item.name
-            return str(item)
-
-        if len(self.sub_members) == 2 and "None" in (
-            sm.name for sm in self.sub_members
-        ):
-            optional_member = next(sm for sm in self.sub_members if sm.name != "None")
-            return f"{self.name}[Optional[{get_member_value(optional_member)}]]"
-        if len(self.sub_members) > 0:
-            sub_members_strs = sorted(get_member_value(sm) for sm in self.sub_members)
-            if len(sub_members_strs) == 1:
-                return f"{self.name}[{sub_members_strs[0]}]"
-            return f"{self.name}[Union[{', '.join(sub_members_strs)}]]"
+        sub_string = sub_members_to_string(self.sub_members)
+        if sub_string:
+            return f"{self.name}[{sub_string}]"
 
         return self.name
 
@@ -210,14 +219,14 @@ class DictEntry:
     """
 
     name: str
-    members: Dict[str, Union[MemberEntry, "DictEntry"]]
+    members: DictMembers
     indentation: int
     force_alternative: bool
 
     def __init__(
         self,
         name: str,
-        members: Optional[Dict[str, Union[MemberEntry, "DictEntry"]]] = None,
+        members: Optional[DictMembers] = None,
         indentation: int = 4,
         force_alternative: bool = False,
     ) -> None:
@@ -228,22 +237,41 @@ class DictEntry:
 
     def get_imports(self) -> Set[str]:
         imports = set()
-        for member in self.members.values():
-            imports |= member.get_imports()
+        for sub_members in self.members.values():
+            for sub_member in sub_members:
+                imports |= sub_member.get_imports()
+            imports |= sub_members_to_imports(sub_members)
         return imports
 
+    def update_members(self, members: DictMembers) -> None:
+        if set(members.keys()) != self.keys:
+            raise Exception("Keys don't match between members")
+
+        for key, value in self.members.items():
+            value |= members[key]
+
+    @property
+    def keys(self) -> Set[str]:
+        return set(self.members.keys())
+
     def __hash__(self) -> int:
-        return hash(str(self))
+        return hash(str(";".join(self.keys)))
 
     def __eq__(self, other: Any) -> bool:
+        """ DictEntries are equal if the keys are equal
+
+        The name and the values of each key don't matter, since the the name is
+        just for the python type and the values are to know what type the keys
+        can be, but the keys themselves are the only important thing
+        """
         if self.__class__ != other.__class__:
             return False
         assert isinstance(other, self.__class__)
 
-        return str(self) == str(other)
+        return hash(self) == hash(other)
 
     def __repr__(self) -> str:
-        return f"<DictEntry ({self})>"
+        return f"<DictEntry ({self.name})>"
 
     def __str__(self) -> str:
         out: List[str] = []
@@ -255,7 +283,9 @@ class DictEntry:
                 if isinstance(value, DictEntry):
                     out.append(f'{" " * self.indentation}"{key}": {value.name}')
                 else:
-                    out.append(f'{" " * self.indentation}"{key}": {value}')
+                    out.append(
+                        f'{" " * self.indentation}"{key}": {sub_members_to_string(value)}'
+                    )
 
             out.append("})")
         else:
@@ -264,7 +294,9 @@ class DictEntry:
                 if isinstance(value, DictEntry):
                     out.append(f"{' ' * self.indentation}{key}: {value.name}")
                 else:
-                    out.append(f"{' ' * self.indentation}{key}: {value}")
+                    out.append(
+                        f"{' ' * self.indentation}{key}: {sub_members_to_string(value)}"
+                    )
 
         return "\n".join(out)
 

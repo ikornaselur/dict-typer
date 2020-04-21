@@ -69,9 +69,11 @@ def test_member_entry_get_imports_from_sub_members() -> None:
     sub_entry = DictEntry(
         "NestedType",
         members={
-            "foo": MemberEntry(
-                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
-            )
+            "foo": {
+                MemberEntry(
+                    "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+                )
+            }
         },
     )
     entry = MemberEntry(
@@ -84,7 +86,7 @@ def test_member_entry_get_imports_from_sub_members() -> None:
 
 def test_dict_entry_base_output() -> None:
     entry = DictEntry(
-        "RootType", members={"foo": MemberEntry("str"), "bar": MemberEntry("int")}
+        "RootType", members={"foo": {MemberEntry("str")}, "bar": {MemberEntry("int")}}
     )
 
     # fmt: off
@@ -100,12 +102,14 @@ def test_dict_entry_nested_dicts() -> None:
     sub_entry = DictEntry(
         "NestedType",
         members={
-            "foo": MemberEntry(
-                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
-            )
+            "foo": {
+                MemberEntry(
+                    "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+                )
+            }
         },
     )
-    entry = DictEntry("RootType", members={"sub": sub_entry})
+    entry = DictEntry("RootType", members={"sub": {sub_entry}})
 
     # fmt: off
     assert str(entry) == "\n".join([
@@ -118,7 +122,7 @@ def test_dict_entry_nested_dicts() -> None:
 def test_dict_entry_alternative_output() -> None:
     entry = DictEntry(
         "RootType",
-        members={"foo": MemberEntry("str"), "bar": MemberEntry("int")},
+        members={"foo": {MemberEntry("str")}, "bar": {MemberEntry("int")}},
         force_alternative=True,
     )
 
@@ -133,14 +137,14 @@ def test_dict_entry_alternative_output() -> None:
 
 
 def test_member_entry_with_dict_entry() -> None:
-    dict_entry = DictEntry("SubType", members={"foo": MemberEntry("str")})
+    dict_entry = DictEntry("SubType", members={"foo": {MemberEntry("str")}})
     entry = MemberEntry("List", sub_members={dict_entry})
 
     assert str(entry) == "List[SubType]"
 
 
 def test_dict_entry_with_member_entry() -> None:
-    dict_entry = DictEntry("SubType", members={"foo": MemberEntry("str")})
+    dict_entry = DictEntry("SubType", members={"foo": {MemberEntry("str")}})
     member_entry = MemberEntry("List", sub_members={dict_entry})
     entry = MemberEntry("Set", sub_members={member_entry})
 
@@ -148,13 +152,15 @@ def test_dict_entry_with_member_entry() -> None:
 
 
 def test_dict_entry_get_imports() -> None:
-    base_entry = DictEntry("RootType", members={"foo": MemberEntry("str")})
+    base_entry = DictEntry("RootType", members={"foo": {MemberEntry("str")}})
     base_entry_with_list = DictEntry(
         "RootType",
         members={
-            "bar": MemberEntry(
-                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
-            )
+            "bar": {
+                MemberEntry(
+                    "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+                )
+            }
         },
     )
 
@@ -166,11 +172,13 @@ def test_dict_entry_get_imports_from_sub_members() -> None:
     sub_entry = DictEntry(
         "NestedType",
         members={
-            "foo": MemberEntry(
-                "List", sub_members={MemberEntry("int"), MemberEntry("str")}
-            )
+            "foo": {
+                MemberEntry(
+                    "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+                )
+            }
         },
     )
-    entry = DictEntry("RootType", members={"sub": sub_entry})
+    entry = DictEntry("RootType", members={"sub": {sub_entry}})
 
     assert entry.get_imports() == {"List", "Union"}
