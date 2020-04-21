@@ -130,7 +130,7 @@ class TypedDefinion:
         return set(self.members) == set(other.members)
 
 
-class NestedDictDef:
+class NestedDictRef:
     name: str
 
     def __init__(self, name: str) -> None:
@@ -140,4 +140,4 @@ class NestedDictDef:
         return self.name
 
     def __repr__(self) -> str:
-        return f"<NestedDictDef ({self.name})>"
+        return f"<NestedDictRef ({self.name})>"

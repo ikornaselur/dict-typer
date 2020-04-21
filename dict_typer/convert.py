@@ -1,7 +1,7 @@
 from typing import Any, Dict, List, Set, Tuple, Type, Union
 
 from dict_typer.exceptions import ConvertException
-from dict_typer.models import MemberDefinition, NestedDictDef, TypedDefinion
+from dict_typer.models import MemberDefinition, NestedDictRef, TypedDefinion
 from dict_typer.utils import key_to_class_name
 
 BASE_TYPES: Tuple[Type, ...] = (  # type: ignore
@@ -50,14 +50,14 @@ def convert(
                 if converted_type_name == nested_type_name:
                     type_idx += 1
 
-                l[idx] = NestedDictDef(name=converted_type_name)
+                l[idx] = NestedDictRef(name=converted_type_name)
 
     def convert_dict(type_name: str, d: Dict) -> str:
         for key, value in d.items():
             if isinstance(value, dict):
                 nested_type_name = f"{key_to_class_name(key)}Type"
                 convert_dict(nested_type_name, value)
-                d[key] = NestedDictDef(name=nested_type_name)
+                d[key] = NestedDictRef(name=nested_type_name)
             elif isinstance(value, list):
                 convert_list(key, value)
 
@@ -83,7 +83,7 @@ def convert(
         if item is None:
             return "None"
 
-        if isinstance(item, NestedDictDef):
+        if isinstance(item, NestedDictRef):
             return item.name
 
         if isinstance(item, BASE_TYPES):
