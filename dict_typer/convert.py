@@ -37,8 +37,6 @@ def convert(
     if not isinstance(source, (list, dict)):
         raise ConvertException(f"Unsupported source type: {type(source)}")
 
-    source = source.copy()  # Copy the source as it will be modified
-
     definitions: List[DictEntry] = []
     root_list: Set[MemberEntry] = set()
 
