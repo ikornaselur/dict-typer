@@ -16,7 +16,7 @@ def test_convert_with_empty_tuple() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_simple_tuple() -> None:
@@ -34,7 +34,7 @@ def test_convert_with_simple_tuple() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_mixed_tuple() -> None:
@@ -52,4 +52,4 @@ def test_convert_with_mixed_tuple() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)

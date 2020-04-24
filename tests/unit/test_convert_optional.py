@@ -13,7 +13,7 @@ def test_convert_single_optional_in_list() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_not_optional_if_multiple_types_with_none() -> None:
@@ -28,7 +28,7 @@ def test_convert_not_optional_if_multiple_types_with_none() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_optional_combined_dicts() -> None:
@@ -39,7 +39,7 @@ def test_convert_optional_combined_dicts() -> None:
 
     # fmt: off
     expected = "\n".join([
-        "from typing import Union",
+        "from typing import Optional",
         "",
         "from typing_extensions import TypedDict",
         "",
@@ -55,4 +55,4 @@ def test_convert_optional_combined_dicts() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)

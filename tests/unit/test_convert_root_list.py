@@ -11,15 +11,15 @@ def test_convert_root_list_single_item() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootItemType(TypedDict):",
+        "class RootItem0Type(TypedDict):",
         "    id: int",
         "",
         "",
-        "RootType = List[RootItemType]",
+        "RootType = List[RootItem0Type]",
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_root_list_multiple_items() -> None:
@@ -36,15 +36,15 @@ def test_convert_root_list_multiple_items() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootItemType(TypedDict):",
+        "class RootItem0Type(TypedDict):",
         "    id: int",
         "",
         "",
-        "RootType = List[RootItemType]",
+        "RootType = List[RootItem0Type]",
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_root_list_multiple_mixed_items() -> None:
@@ -62,19 +62,19 @@ def test_convert_root_list_multiple_mixed_items() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootItemType(TypedDict):",
+        "class RootItem0Type(TypedDict):",
         "    id: int",
         "",
         "",
-        "class RootItemType1(TypedDict):",
+        "class RootItem1Type(TypedDict):",
         "    value: str",
         "",
         "",
-        "RootType = List[Union[RootItemType, RootItemType1]]",
+        "RootType = List[Union[RootItem0Type, RootItem1Type]]",
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_root_list_mixed_non_dict() -> None:
@@ -89,4 +89,4 @@ def test_convert_root_list_mixed_non_dict() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)

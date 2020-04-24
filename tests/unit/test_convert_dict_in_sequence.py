@@ -11,16 +11,16 @@ def test_convert_list_of_repeated_dicts() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class DictListItemType(TypedDict):",
+        "class DictListItem0Type(TypedDict):",
         "    id: int",
         "",
         "",
         "class RootType(TypedDict):",
-        "    dictList: List[DictListItemType]",
+        "    dictList: List[DictListItem0Type]",
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_list_of_mixed_dicts() -> None:
@@ -33,24 +33,24 @@ def test_convert_list_of_mixed_dicts() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class DictListItemType(TypedDict):",
+        "class DictListItem0Type(TypedDict):",
         "    foo: int",
         "",
         "",
-        "class DictListItemType1(TypedDict):",
+        "class DictListItem1Type(TypedDict):",
         "    bar: int",
         "",
         "",
-        "class DictListItemType2(TypedDict):",
+        "class DictListItem2Type(TypedDict):",
         "    baz: int",
         "",
         "",
         "class RootType(TypedDict):",
-        "    dictList: List[Union[DictListItemType, DictListItemType1, DictListItemType2]]",
+        "    dictList: List[Union[DictListItem0Type, DictListItem1Type, DictListItem2Type]]",
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_list_of_repeated_dicts_different_types_combined() -> None:
@@ -63,13 +63,13 @@ def test_convert_list_of_repeated_dicts_different_types_combined() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class DictListItemType(TypedDict):",
+        "class DictListItem0Type(TypedDict):",
         "    id: Union[float, int, str]",
         "",
         "",
         "class RootType(TypedDict):",
-        "    dictList: List[DictListItemType]",
+        "    dictList: List[DictListItem0Type]",
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)

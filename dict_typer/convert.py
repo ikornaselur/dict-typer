@@ -1,7 +1,13 @@
 from typing import Any, Dict, List, Set, Tuple, Type, Union
 
 from dict_typer.exceptions import ConvertException
-from dict_typer.models import MemberDefinition, NestedDictDef, TypedDefinion
+from dict_typer.models import (
+    DictEntry,
+    EntryType,
+    MemberEntry,
+    sub_members_to_imports,
+    sub_members_to_string,
+)
 from dict_typer.utils import key_to_class_name
 
 BASE_TYPES: Tuple[Type, ...] = (  # type: ignore
@@ -31,121 +37,124 @@ def convert(
     if not isinstance(source, (list, dict)):
         raise ConvertException(f"Unsupported source type: {type(source)}")
 
-    source = source.copy()  # Copy the source as it will be modified
+    definitions: List[DictEntry] = []
+    root_list: Set[MemberEntry] = set()
 
-    typing_imports: Set[str] = set()
-    definitions: List[TypedDefinion] = []
-    replacements: Dict[str, str] = {}
+    def add_definition(entry: EntryType) -> EntryType:
+        """ Add an entry to the definions
 
-    def convert_list(key: str, l: List) -> None:
-        type_idx = 0
-        for idx, item in enumerate(l):
-            if isinstance(item, dict):
-                nested_type_name = f"{key_to_class_name(key)}Item{type_postfix}"
-                if type_idx:
-                    nested_type_name += str(type_idx)
-
-                converted_type_name = convert_dict(nested_type_name, item)
-
-                if converted_type_name == nested_type_name:
-                    type_idx += 1
-
-                l[idx] = NestedDictDef(name=converted_type_name)
-
-    def convert_dict(type_name: str, d: Dict) -> str:
-        for key, value in d.items():
-            if isinstance(value, dict):
-                nested_type_name = f"{key_to_class_name(key)}Type"
-                convert_dict(nested_type_name, value)
-                d[key] = NestedDictDef(name=nested_type_name)
-            elif isinstance(value, list):
-                convert_list(key, value)
-
-        members: List[MemberDefinition] = []
-        for key, value in d.items():
-            members.append(MemberDefinition(name=key, types=[get_type(value)]))
-
-        td: TypedDefinion
-        type_def = next((td for td in definitions if td.members == members), None)
-
-        if type_def:
-            replacements[type_name] = type_def.name
-            type_def.update_members(members)
+        If the entry is a DictEntry and there's an existing entry with the same
+        keys, then combine the DictEntries
+        """
+        if isinstance(entry, MemberEntry):
+            root_list.add(entry)
+            return entry
         else:
-            type_def = TypedDefinion(name=type_name, members=members)
-            definitions.append(type_def)
+            for definition in [d for d in definitions if isinstance(d, DictEntry)]:
+                if entry.keys == definition.keys:
+                    definition.update_members(entry.members)
+                    return definition
+            else:
+                definitions.append(entry)
+                return entry
 
-        typing_imports.update(type_def.get_imports())
+    def convert_list(key: str, l: List, item_name: str) -> MemberEntry:
+        entry = MemberEntry(key)
 
-        return type_def.name
+        idx = 0
+        for item in l:
+            item_type = get_type(item, key=f"{item_name}{idx}")
 
-    def get_type(item: Any) -> Any:
+            entry.sub_members.add(item_type)
+            if isinstance(item_type, DictEntry):
+                add_definition(item_type)
+            idx += 1
+
+        return entry
+
+    def convert_dict(type_name: str, d: Dict) -> DictEntry:
+        entry = DictEntry(type_name)
+        for key, value in d.items():
+            value_type = get_type(value, key=key)
+            if isinstance(value_type, DictEntry):
+                definition = add_definition(value_type)
+                value_type = definition
+            entry.members[key] = {value_type}
+
+        return entry
+
+    def get_type(item: Any, key: str) -> Union[MemberEntry, DictEntry]:
         if item is None:
-            return "None"
-
-        if isinstance(item, NestedDictDef):
-            return item.name
+            return MemberEntry("None")
 
         if isinstance(item, BASE_TYPES):
-            return type(item).__name__
+            return MemberEntry(type(item).__name__)
 
         if isinstance(item, (list, set, tuple, frozenset)):
             if isinstance(item, list):
-                sequence_type = "List"
+                sequence_type_name = "List"
             elif isinstance(item, set):
-                sequence_type = "Set"
+                sequence_type_name = "Set"
             elif isinstance(item, frozenset):
-                sequence_type = "FrozenSet"
+                sequence_type_name = "FrozenSet"
             else:
-                sequence_type = "Tuple"
+                sequence_type_name = "Tuple"
 
-            typing_imports.add(sequence_type)
-            list_item_types = {get_type(x) for x in item}
-            if len(list_item_types) == 0:
-                return sequence_type
-            if len(list_item_types) == 1:
-                return f"{sequence_type}[{list_item_types.pop()}]"
-            if len(list_item_types) == 2 and "None" in list_item_types:
-                list_item_types.discard("None")
-                typing_imports.add("Optional")
-                return f"{sequence_type}[Optional[{list_item_types.pop()}]]"
+            list_item_types: Set[Union[MemberEntry, DictEntry]] = set()
+            idx = 0
+            for value in item:
+                item_type = get_type(value, key=f"{key}Item{idx}")
+                if isinstance(item_type, DictEntry):
+                    if item_type.members not in (
+                        getattr(t, "members", None) for t in list_item_types
+                    ):
+                        list_item_types.add(item_type)
+                        idx += 1
+                        if isinstance(item_type, DictEntry):
+                            add_definition(item_type)
+                else:
+                    list_item_types.add(item_type)
 
-            union_type = f"Union[{', '.join(str(t) for t in sorted(list_item_types))}]"
-            typing_imports.add("Union")
-            return f"{sequence_type}[{union_type}]"
+            return MemberEntry(sequence_type_name, sub_members=list_item_types)
 
         if isinstance(item, dict):
-            raise ConvertException(
-                "Unable to return type instance of dict, preprocess and use NestedDictDec"
-            )
+            return convert_dict(f"{key_to_class_name(key)}{type_postfix}", item)
 
         raise NotImplementedError(f"Type handling for '{type(item)}' not implemented")
 
     if isinstance(source, dict):
-        convert_dict(f"{root_type_name}{type_postfix}", source)
+        add_definition(convert_dict(f"{root_type_name}{type_postfix}", source))
     else:
-        convert_list(f"{root_type_name}", source)
-        # Run get type to add imports
-        get_type(source)
+        add_definition(convert_list(f"List", source, item_name=f"{root_type_name}Item"))
 
     output = ""
 
     if show_imports:
+        typing_imports = set()
+        typed_dict_import = False
+
+        for definition in definitions:
+            if isinstance(definition, DictEntry):
+                typed_dict_import = True
+            typing_imports |= definition.get_imports()
+        if root_list:
+            typing_imports.add("List")
+            typing_imports |= sub_members_to_imports(root_list)
+
         if typing_imports:
             output += "\n".join(
                 [f"from typing import {', '.join(sorted(typing_imports))}", "", ""]
             )
-        if len(definitions):
+        if typed_dict_import:
             output += "\n".join(["from typing_extensions import TypedDict", "", "", ""])
 
-    output += "\n\n\n".join(d.printable(replacements) for d in definitions)
+    output += "\n\n\n".join([str(d) for d in definitions])
 
-    if isinstance(source, list):
-        # When the root is a list, add a type alias for the list
+    if root_list:
         if len(output):
             output += "\n"
             if len(definitions):
                 output += "\n\n"
-        output += f"{root_type_name}{type_postfix} = {get_type(source)}"
+        output += f"{root_type_name}{type_postfix} = {sub_members_to_string(root_list)}"
 
     return output

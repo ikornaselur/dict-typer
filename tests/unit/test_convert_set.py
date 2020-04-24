@@ -16,7 +16,7 @@ def test_convert_with_empty_set() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_simple_set() -> None:
@@ -34,7 +34,7 @@ def test_convert_with_simple_set() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
 
 
 def test_convert_with_mixed_set() -> None:
@@ -52,4 +52,4 @@ def test_convert_with_mixed_set() -> None:
     ])
     # fmt: on
 
-    assert convert(source) == expected
+    assert expected == convert(source)
