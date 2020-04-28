@@ -65,10 +65,19 @@ class DefinitionBuilder:
             self.root_list.add(entry)
             return entry
         else:
-            for definition in [d for d in self.definitions if isinstance(d, DictEntry)]:
+            dicts_only = [d for d in self.definitions if isinstance(d, DictEntry)]
+            for definition in dicts_only:
                 if entry.keys == definition.keys:
                     definition.update_members(entry.members)
                     return definition
+                if entry.name == definition.name:
+                    idx = 1
+                    new_name = f"{entry.name}{idx}"
+                    dicts_names = [d.name for d in dicts_only]
+                    while new_name in dicts_names:
+                        idx += 1
+                        new_name = f"{entry.name}{idx}"
+                    entry.name = new_name
             else:
                 self.definitions.append(entry)
                 return entry
@@ -87,9 +96,9 @@ class DefinitionBuilder:
 
         return entry
 
-    def _convert_dict(self, type_name: str, d: Dict) -> DictEntry:
+    def _convert_dict(self, type_name: str, dct: Dict) -> DictEntry:
         entry = DictEntry(type_name)
-        for key, value in d.items():
+        for key, value in dct.items():
             value_type = self._get_type(value, key=key)
             if isinstance(value_type, DictEntry):
                 definition = self._add_definition(value_type)
