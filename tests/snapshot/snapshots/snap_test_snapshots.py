@@ -157,25 +157,12 @@ InitParamType = TypedDict("InitParamType", {
 })
 
 
-ServletItem0Type = TypedDict("ServletItem0Type", {
-    "servlet-name": str,
-    "servlet-class": str,
-    "init-param": Union[InitParamType, InitParamType, InitParamType],
-})
-
-
-class InitParamType(TypedDict):
+class InitParamType1(TypedDict):
     mailHost: str
     mailHostOverride: str
 
 
-ServletItem2Type = TypedDict("ServletItem2Type", {
-    "servlet-name": str,
-    "servlet-class": str,
-})
-
-
-class InitParamType(TypedDict):
+class InitParamType2(TypedDict):
     templatePath: str
     log: int
     logLocation: str
@@ -189,6 +176,19 @@ class InitParamType(TypedDict):
     lookInContext: int
     adminGroupID: int
     betaServer: bool
+
+
+ServletItem0Type = TypedDict("ServletItem0Type", {
+    "servlet-name": str,
+    "servlet-class": str,
+    "init-param": Union[InitParamType, InitParamType1, InitParamType2],
+})
+
+
+ServletItem2Type = TypedDict("ServletItem2Type", {
+    "servlet-name": str,
+    "servlet-class": str,
+})
 
 
 class ServletMappingType(TypedDict):
@@ -297,15 +297,15 @@ class IdType(TypedDict):
     channelId: str
 
 
+class IdType1(TypedDict):
+    kind: str
+    videoId: str
+
+
 class ItemsItem0Type(TypedDict):
     kind: str
     etag: str
-    id: Union[IdType, IdType]
-
-
-class IdType(TypedDict):
-    kind: str
-    videoId: str
+    id: Union[IdType, IdType1]
 
 
 class RootType(TypedDict):
@@ -344,7 +344,7 @@ class UrlType(TypedDict):
     urls: Union[List, List[UrlsItem0Type]]
 
 
-class EntitiesType(TypedDict):
+class EntitiesType1(TypedDict):
     url: UrlType
     description: UrlType
 
@@ -357,7 +357,7 @@ class UserType(TypedDict):
     location: str
     description: str
     url: str
-    entities: EntitiesType
+    entities: EntitiesType1
     protected: bool
     followers_count: int
     friends_count: int

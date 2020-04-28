@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "Checking if code lints..."
+make lint
+echo ""

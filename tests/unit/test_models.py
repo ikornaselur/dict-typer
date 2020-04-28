@@ -1,4 +1,4 @@
-from dict_typer.models import DictEntry, MemberEntry
+from dict_typer.models import DictEntry, MemberEntry, key_to_dependency_cmp
 
 
 def test_member_entry_base_output() -> None:
@@ -182,3 +182,48 @@ def test_dict_entry_get_imports_from_sub_members() -> None:
     entry = DictEntry("RootType", members={"sub": {sub_entry}})
 
     assert entry.get_imports() == {"List", "Union"}
+
+
+def test_sorting_member_entries_based_on_dependency() -> None:
+    foo = MemberEntry(name="Foo")
+    bar = MemberEntry(name="Bar", sub_members={foo})
+    baz = MemberEntry(name="Baz", sub_members={bar})
+
+    assert sorted([foo, bar, baz], key=key_to_dependency_cmp) == [foo, bar, baz]
+    assert sorted([bar, foo, baz], key=key_to_dependency_cmp) == [foo, bar, baz]
+    assert sorted([baz, bar, foo], key=key_to_dependency_cmp) == [foo, bar, baz]
+
+
+def test_sorting_dict_entry_based_on_dependency() -> None:
+    foo = MemberEntry(name="Foo")
+    bar = MemberEntry(name="Bar", sub_members={foo})
+    baz = MemberEntry(name="int")
+
+    entry = DictEntry("RootType", members={"foo": {foo}, "bar": {bar}, "baz": {baz}})
+
+    assert sorted([foo, baz, entry, bar], key=key_to_dependency_cmp) == [
+        foo,
+        baz,
+        bar,
+        entry,
+    ]
+
+
+def test_sorting_dict_entry_with_sub_entry() -> None:
+    sub_entry = DictEntry(
+        "NestedType",
+        members={
+            "foo": {
+                MemberEntry(
+                    "List", sub_members={MemberEntry("int"), MemberEntry("str")}
+                )
+            }
+        },
+    )
+    entry = DictEntry("RootType", members={"sub": {sub_entry}})
+
+    assert sub_entry.name in entry.depends_on
+    assert entry.name not in sub_entry.depends_on
+
+    assert sorted([entry, sub_entry], key=key_to_dependency_cmp) == [sub_entry, entry]
+    assert sorted([sub_entry, entry], key=key_to_dependency_cmp) == [sub_entry, entry]

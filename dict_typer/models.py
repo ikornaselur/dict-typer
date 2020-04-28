@@ -1,3 +1,4 @@
+import functools
 from typing import Any, Dict, List, Optional, Set, TypeVar
 
 from dict_typer.utils import is_valid_key
@@ -12,7 +13,7 @@ DictMembers = Dict[str, SubMembers]
 
 def sub_members_to_string(sub_members: SubMembers) -> str:
     def get_member_value(item: EntryType) -> str:
-        """ Only reference DictEntry by name """
+        """ Only reference DictEntry by name. """
         if isinstance(item, DictEntry):
             return item.name
         return str(item)
@@ -43,7 +44,7 @@ def sub_members_to_imports(sub_members: SubMembers) -> Set[str]:
 
 
 class MemberEntry:
-    """ A representation of a type with optional sub types
+    """ A representation of a type with optional sub types.
 
     A MemberEntry without subtypes can be considered as a leaf of a tree, in
     most cases it will be a simple unit such as str, int, float, but it can
@@ -63,6 +64,10 @@ class MemberEntry:
             imports.add(self.name)
 
         return imports | sub_members_to_imports(self.sub_members)
+
+    @property
+    def depends_on(self) -> Set[str]:
+        return {sm.name for sm in self.sub_members}
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -86,7 +91,7 @@ class MemberEntry:
 
 
 class DictEntry:
-    """ A representation of a typed dict
+    """ A representation of a typed dict.
 
     A typed dict will have a name and a members map. The value of each member
     is a MemberEntry, which has a name and an optional submembers.
@@ -131,11 +136,16 @@ class DictEntry:
     def keys(self) -> Set[str]:
         return set(self.members.keys())
 
+    @property
+    def depends_on(self) -> Set[str]:
+        members = set.union(*self.members.values())
+        return set.union(*[m.depends_on for m in members], {m.name for m in members})
+
     def __hash__(self) -> int:
         return hash(str(";".join(self.keys)))
 
     def __eq__(self, other: Any) -> bool:
-        """ DictEntries are equal if the keys are equal
+        """ DictEntries are equal if the keys are equal.
 
         The name and the values of each key don't matter, since the the name is
         just for the python type and the values are to know what type the keys
@@ -176,3 +186,37 @@ class DictEntry:
                     )
 
         return "\n".join(out)
+
+
+@functools.total_ordering
+class DependencyCmp:
+    _name: str
+    _depends_on: Set[str]
+
+    def __init__(self, obj: EntryType) -> None:
+        self._name = obj.name
+        self._depends_on = obj.depends_on
+
+    def __lt__(self, other: Any) -> bool:
+        """ Considered less if other depends on it """
+        if self.__class__ != other.__class__:
+            raise TypeError(
+                "DependencyCmp comparison only supports comparing to other instances of DependencyCmp"
+            )
+        assert isinstance(other, self.__class__)
+
+        return self._name in other._depends_on
+
+    def __eq__(self, other: Any) -> bool:
+        """ Considered equal if other doesn't depend on it """
+        if self.__class__ != other.__class__:
+            raise TypeError(
+                "DependencyCmp comparison only supports comparing to other instances of DependencyCmp"
+            )
+        assert isinstance(other, self.__class__)
+
+        return self._name not in other._depends_on
+
+
+def key_to_dependency_cmp(entry: Any) -> DependencyCmp:
+    return DependencyCmp(entry)
