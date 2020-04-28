@@ -13,7 +13,7 @@ DictMembers = Dict[str, SubMembers]
 
 def sub_members_to_string(sub_members: SubMembers) -> str:
     def get_member_value(item: EntryType) -> str:
-        """ Only reference DictEntry by name """
+        """ Only reference DictEntry by name. """
         if isinstance(item, DictEntry):
             return item.name
         return str(item)
@@ -44,7 +44,7 @@ def sub_members_to_imports(sub_members: SubMembers) -> Set[str]:
 
 
 class MemberEntry:
-    """ A representation of a type with optional sub types
+    """ A representation of a type with optional sub types.
 
     A MemberEntry without subtypes can be considered as a leaf of a tree, in
     most cases it will be a simple unit such as str, int, float, but it can
@@ -91,7 +91,7 @@ class MemberEntry:
 
 
 class DictEntry:
-    """ A representation of a typed dict
+    """ A representation of a typed dict.
 
     A typed dict will have a name and a members map. The value of each member
     is a MemberEntry, which has a name and an optional submembers.
@@ -145,7 +145,7 @@ class DictEntry:
         return hash(str(";".join(self.keys)))
 
     def __eq__(self, other: Any) -> bool:
-        """ DictEntries are equal if the keys are equal
+        """ DictEntries are equal if the keys are equal.
 
         The name and the values of each key don't matter, since the the name is
         just for the python type and the values are to know what type the keys

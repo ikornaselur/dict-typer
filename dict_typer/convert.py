@@ -56,7 +56,7 @@ class DefinitionBuilder:
         self.source = source
 
     def _add_definition(self, entry: EntryType) -> EntryType:
-        """ Add an entry to the definions
+        """ Add an entry to the definions.
 
         If the entry is a DictEntry and there's an existing entry with the same
         keys, then combine the DictEntries
@@ -78,9 +78,8 @@ class DefinitionBuilder:
                         idx += 1
                         new_name = f"{entry.name}{idx}"
                     entry.name = new_name
-            else:
-                self.definitions.append(entry)
-                return entry
+            self.definitions.append(entry)
+            return entry
 
     def _convert_list(self, key: str, lst: List, item_name: str) -> MemberEntry:
         entry = MemberEntry(key)
