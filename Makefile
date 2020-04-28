@@ -25,3 +25,6 @@ test_%:
 
 shell:
 	poetry run ipython
+
+install_git_hooks:
+	ln -s `pwd`/.hooks/pre-push .git/hooks/pre-push
