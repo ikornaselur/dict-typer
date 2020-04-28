@@ -5,9 +5,9 @@ from dict_typer.models import (
     DictEntry,
     EntryType,
     MemberEntry,
+    key_to_dependency_cmp,
     sub_members_to_imports,
     sub_members_to_string,
-    key_to_dependency_cmp,
 )
 from dict_typer.utils import key_to_class_name
 

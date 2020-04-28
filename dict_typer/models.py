@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Dict, Generic, List, Optional, Set, Type, TypeVar
+from typing import Any, Dict, List, Optional, Set, TypeVar
 
 from dict_typer.utils import is_valid_key
 
