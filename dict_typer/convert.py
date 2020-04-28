@@ -7,6 +7,7 @@ from dict_typer.models import (
     MemberEntry,
     sub_members_to_imports,
     sub_members_to_string,
+    key_to_dependency_cmp,
 )
 from dict_typer.utils import key_to_class_name
 
@@ -72,11 +73,11 @@ class DefinitionBuilder:
                 self.definitions.append(entry)
                 return entry
 
-    def _convert_list(self, key: str, l: List, item_name: str) -> MemberEntry:
+    def _convert_list(self, key: str, lst: List, item_name: str) -> MemberEntry:
         entry = MemberEntry(key)
 
         idx = 0
-        for item in l:
+        for item in lst:
             item_type = self._get_type(item, key=f"{item_name}{idx}")
 
             entry.sub_members.add(item_type)
@@ -180,7 +181,9 @@ class DefinitionBuilder:
                     ["from typing_extensions import TypedDict", "", "", ""]
                 )
 
-        self._output += "\n\n\n".join([str(d) for d in self.definitions])
+        self._output += "\n\n\n".join(
+            [str(d) for d in sorted(self.definitions, key=key_to_dependency_cmp)]
+        )
 
         if self.root_list:
             if len(self._output):

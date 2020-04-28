@@ -1,4 +1,5 @@
-from typing import Any, Dict, List, Optional, Set, TypeVar
+import functools
+from typing import Any, Dict, Generic, List, Optional, Set, Type, TypeVar
 
 from dict_typer.utils import is_valid_key
 
@@ -63,6 +64,10 @@ class MemberEntry:
             imports.add(self.name)
 
         return imports | sub_members_to_imports(self.sub_members)
+
+    @property
+    def depends_on(self) -> Set[str]:
+        return {sm.name for sm in self.sub_members}
 
     def __hash__(self) -> int:
         return hash(str(self))
@@ -131,6 +136,11 @@ class DictEntry:
     def keys(self) -> Set[str]:
         return set(self.members.keys())
 
+    @property
+    def depends_on(self) -> Set[str]:
+        members = set.union(*self.members.values())
+        return set.union(*[m.depends_on for m in members], {m.name for m in members})
+
     def __hash__(self) -> int:
         return hash(str(";".join(self.keys)))
 
@@ -176,3 +186,37 @@ class DictEntry:
                     )
 
         return "\n".join(out)
+
+
+@functools.total_ordering
+class DependencyCmp:
+    _name: str
+    _depends_on: Set[str]
+
+    def __init__(self, obj: EntryType) -> None:
+        self._name = obj.name
+        self._depends_on = obj.depends_on
+
+    def __lt__(self, other: Any) -> bool:
+        """ Considered less if other depends on it """
+        if self.__class__ != other.__class__:
+            raise TypeError(
+                "DependencyCmp comparison only supports comparing to other instances of DependencyCmp"
+            )
+        assert isinstance(other, self.__class__)
+
+        return self._name in other._depends_on
+
+    def __eq__(self, other: Any) -> bool:
+        """ Considered equal if other doesn't depend on it """
+        if self.__class__ != other.__class__:
+            raise TypeError(
+                "DependencyCmp comparison only supports comparing to other instances of DependencyCmp"
+            )
+        assert isinstance(other, self.__class__)
+
+        return self._name not in other._depends_on
+
+
+def key_to_dependency_cmp(entry: Any) -> DependencyCmp:
+    return DependencyCmp(entry)
