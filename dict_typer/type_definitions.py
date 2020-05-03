@@ -203,7 +203,7 @@ class DefinitionBuilder:
         return self._output
 
 
-def convert(
+def get_type_definitions(
     source: Union[Dict, List],
     root_type_name: str = "Root",
     type_postfix: str = "Type",

@@ -1,4 +1,4 @@
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_root_list_single_item() -> None:
@@ -19,7 +19,7 @@ def test_convert_root_list_single_item() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_root_list_multiple_items() -> None:
@@ -44,7 +44,7 @@ def test_convert_root_list_multiple_items() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_root_list_multiple_mixed_items() -> None:
@@ -74,7 +74,7 @@ def test_convert_root_list_multiple_mixed_items() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_root_list_mixed_non_dict() -> None:
@@ -89,4 +89,4 @@ def test_convert_root_list_mixed_non_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

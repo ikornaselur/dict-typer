@@ -1,4 +1,4 @@
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_with_invalid_key_names() -> None:
@@ -16,7 +16,7 @@ def test_convert_with_invalid_key_names() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_invalid_key_names_nested() -> None:
@@ -37,4 +37,4 @@ def test_convert_with_invalid_key_names_nested() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

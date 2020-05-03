@@ -1,6 +1,6 @@
 from typing import Dict
 
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_empty_root_dict() -> None:
@@ -15,7 +15,7 @@ def test_convert_empty_root_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_nested_empty_dict() -> None:
@@ -33,7 +33,7 @@ def test_convert_with_nested_empty_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_nested_dict() -> None:
@@ -53,7 +53,7 @@ def test_convert_with_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_multiple_levels_nested_dict() -> None:
@@ -81,7 +81,7 @@ def test_convert_with_multiple_levels_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_multiple_nested_dict() -> None:
@@ -106,7 +106,7 @@ def test_convert_with_multiple_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_repeated_nested_dict() -> None:
@@ -136,7 +136,7 @@ def test_convert_with_repeated_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_nested_overlapping_dict() -> None:
@@ -168,4 +168,4 @@ def test_convert_nested_overlapping_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

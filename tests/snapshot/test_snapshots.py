@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Union
 
 import pytest
 
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def get_f(num: int) -> Union[Dict, List]:
@@ -34,6 +34,6 @@ def test_snapshots(snapshot: Any, fixture: str) -> None:
     with open(f"tests/snapshot/fixtures/{fixture}.json", "r") as f:
         source = json.load(f)
 
-    output = convert(source)
+    output = get_type_definitions(source)
 
     snapshot.assert_match(output)

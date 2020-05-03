@@ -1,6 +1,6 @@
 from typing import List
 
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_simple_json() -> None:
@@ -18,7 +18,7 @@ def test_convert_simple_json() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_base_types() -> None:
@@ -70,7 +70,7 @@ def test_convert_base_types() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_none() -> None:
@@ -86,4 +86,4 @@ def test_convert_none() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
