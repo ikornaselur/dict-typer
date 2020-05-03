@@ -1,4 +1,5 @@
 #!/bin/bash
 echo "Checking if code lints..."
-make lint
+poetry run mypy dict_typer tests/*
+poetry run flake8 dict_typer tests/*
 echo ""
