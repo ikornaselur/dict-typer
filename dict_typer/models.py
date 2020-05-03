@@ -115,6 +115,8 @@ class DictEntry:
         self.force_alternative = force_alternative
 
     def get_imports(self) -> Set[str]:
+        if not self.members:
+            return {"Dict"}
         imports = set()
         for sub_members in self.members.values():
             for sub_member in sub_members:
@@ -163,6 +165,9 @@ class DictEntry:
         return f"<DictEntry ({self.name})>"
 
     def __str__(self) -> str:
+        if not self.members:
+            return ""
+
         out: List[str] = []
 
         if self.force_alternative or self.any_invalid_key():

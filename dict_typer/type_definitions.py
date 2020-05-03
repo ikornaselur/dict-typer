@@ -173,7 +173,7 @@ class DefinitionBuilder:
             typed_dict_import = False
 
             for definition in self.definitions:
-                if isinstance(definition, DictEntry):
+                if isinstance(definition, DictEntry) and definition.members:
                     typed_dict_import = True
                 typing_imports |= definition.get_imports()
             if self.root_list:
@@ -199,6 +199,11 @@ class DefinitionBuilder:
                 if len(self.definitions):
                     self._output += "\n\n"
             self._output += f"{self.root_type_name}{self.type_postfix} = {sub_members_to_string(self.root_list)}"
+        # Special case with root being empty Dict
+        if self.source == {}:
+            if len(self._output):
+                self._output += "\n"
+            self._output += f"{self.root_type_name}{self.type_postfix} = Dict"
 
         return self._output
 
