@@ -7,7 +7,7 @@ import click
 
 from dict_typer.type_definitions import get_type_definitions
 
-__version__ = "0.1.7"
+__version__ = "0.1.8"
 
 
 @click.command()
