@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Set, TypeVar
 
 from dict_typer.utils import is_valid_key
 
-KNOWN_TYPE_IMPORTS = ("List", "Tuple", "Set", "FrozenSet")
+KNOWN_TYPE_IMPORTS = ("List", "Tuple", "Set", "FrozenSet", "Dict")
 
 
 EntryType = TypeVar("EntryType", "MemberEntry", "DictEntry")
@@ -115,6 +115,8 @@ class DictEntry:
         self.force_alternative = force_alternative
 
     def get_imports(self) -> Set[str]:
+        if not self.members:
+            return {"Dict"}
         imports = set()
         for sub_members in self.members.values():
             for sub_member in sub_members:
@@ -138,6 +140,8 @@ class DictEntry:
 
     @property
     def depends_on(self) -> Set[str]:
+        if not self.members:
+            return set()
         members = set.union(*self.members.values())
         return set.union(*[m.depends_on for m in members], {m.name for m in members})
 
@@ -161,6 +165,9 @@ class DictEntry:
         return f"<DictEntry ({self.name})>"
 
     def __str__(self) -> str:
+        if not self.members:
+            return ""
+
         out: List[str] = []
 
         if self.force_alternative or self.any_invalid_key():

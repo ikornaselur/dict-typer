@@ -1,4 +1,4 @@
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_single_optional_in_list() -> None:
@@ -13,7 +13,7 @@ def test_convert_single_optional_in_list() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_not_optional_if_multiple_types_with_none() -> None:
@@ -28,7 +28,7 @@ def test_convert_not_optional_if_multiple_types_with_none() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_optional_combined_dicts() -> None:
@@ -55,4 +55,4 @@ def test_convert_optional_combined_dicts() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

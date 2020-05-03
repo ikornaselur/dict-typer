@@ -1,4 +1,39 @@
-from dict_typer import convert
+from typing import Dict
+
+from dict_typer import get_type_definitions
+
+
+def test_convert_empty_root_dict() -> None:
+    source: Dict = {}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import Dict",
+        "",
+        "",
+        "RootType = Dict",
+    ])
+    # fmt: on
+
+    assert expected == get_type_definitions(source)
+
+
+def test_convert_with_nested_empty_dict() -> None:
+    source: Dict = {"nest": {}}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import Dict",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    nest: Dict",
+    ])
+    # fmt: on
+
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_nested_dict() -> None:
@@ -18,7 +53,7 @@ def test_convert_with_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_multiple_levels_nested_dict() -> None:
@@ -46,7 +81,7 @@ def test_convert_with_multiple_levels_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_multiple_nested_dict() -> None:
@@ -71,7 +106,7 @@ def test_convert_with_multiple_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_repeated_nested_dict() -> None:
@@ -101,7 +136,7 @@ def test_convert_with_repeated_nested_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_nested_overlapping_dict() -> None:
@@ -133,4 +168,4 @@ def test_convert_nested_overlapping_dict() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

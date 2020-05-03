@@ -1,7 +1,7 @@
 import subprocess
 import tempfile
 
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 # fmt: off
 TEST_SOURCE = {
@@ -46,7 +46,7 @@ def test_script_runs_with_nonzero() -> None:
     source_type_name = "Test"
     type_postfix = "Type"
 
-    output = convert(
+    output = get_type_definitions(
         TEST_SOURCE,
         root_type_name=source_type_name,
         type_postfix=type_postfix,
@@ -100,7 +100,7 @@ def test_mypy_has_no_issues() -> None:
     source_type_name = "Test"
     type_postfix = "Type"
 
-    output = convert(
+    output = get_type_definitions(
         TEST_SOURCE,
         root_type_name=source_type_name,
         type_postfix=type_postfix,

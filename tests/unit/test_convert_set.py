@@ -1,4 +1,4 @@
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_with_empty_set() -> None:
@@ -16,7 +16,7 @@ def test_convert_with_empty_set() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_simple_set() -> None:
@@ -34,7 +34,7 @@ def test_convert_with_simple_set() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_mixed_set() -> None:
@@ -52,4 +52,4 @@ def test_convert_with_mixed_set() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

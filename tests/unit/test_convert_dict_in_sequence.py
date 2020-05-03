@@ -1,4 +1,4 @@
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_list_of_repeated_dicts() -> None:
@@ -20,7 +20,7 @@ def test_convert_list_of_repeated_dicts() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_list_of_mixed_dicts() -> None:
@@ -50,7 +50,7 @@ def test_convert_list_of_mixed_dicts() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_list_of_repeated_dicts_different_types_combined() -> None:
@@ -72,4 +72,4 @@ def test_convert_list_of_repeated_dicts_different_types_combined() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

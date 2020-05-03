@@ -5,7 +5,7 @@ from typing import Dict, Tuple
 
 import click
 
-from dict_typer.convert import convert
+from dict_typer.type_definitions import get_type_definitions
 
 __version__ = "0.1.7"
 
@@ -36,6 +36,6 @@ def cli(file: Tuple[io.TextIOWrapper], imports: bool = True) -> None:
     except json.decoder.JSONDecodeError as e:
         raise click.UsageError(f"JSON serialisation error \n\n{e}")
 
-    output = convert(parsed, show_imports=imports)
+    output = get_type_definitions(parsed, show_imports=imports)
 
     click.echo(output)

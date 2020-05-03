@@ -1,4 +1,6 @@
-from dict_typer import convert
+from typing import List
+
+from dict_typer import get_type_definitions
 
 
 def test_convert_with_empty_list() -> None:
@@ -16,7 +18,22 @@ def test_convert_with_empty_list() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
+
+
+def test_convert_empty_root_list() -> None:
+    source: List = []
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List",
+        "",
+        "",
+        "RootType = List",
+    ])
+    # fmt: on
+
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_simple_list() -> None:
@@ -34,7 +51,7 @@ def test_convert_with_simple_list() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)
 
 
 def test_convert_with_mixed_list() -> None:
@@ -52,4 +69,4 @@ def test_convert_with_mixed_list() -> None:
     ])
     # fmt: on
 
-    assert expected == convert(source)
+    assert expected == get_type_definitions(source)

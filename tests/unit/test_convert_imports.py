@@ -1,4 +1,4 @@
-from dict_typer import convert
+from dict_typer import get_type_definitions
 
 
 def test_convert_hides_import_optionally() -> None:
@@ -17,7 +17,7 @@ def test_convert_hides_import_optionally() -> None:
     ])
     # fmt: on
 
-    assert convert(source, show_imports=False) == expected
+    assert get_type_definitions(source, show_imports=False) == expected
 
 
 def test_convert_optionally_adds_imports_with_nested_defs() -> None:
@@ -40,7 +40,7 @@ def test_convert_optionally_adds_imports_with_nested_defs() -> None:
     ])
     # fmt: on
 
-    assert convert(source, show_imports=True) == expected
+    assert get_type_definitions(source, show_imports=True) == expected
 
 
 def test_convert_imports_with_no_typing_imports() -> None:
@@ -57,7 +57,7 @@ def test_convert_imports_with_no_typing_imports() -> None:
     ])
     # fmt: on
 
-    assert convert(source, show_imports=True) == expected
+    assert get_type_definitions(source, show_imports=True) == expected
 
 
 def test_convert_imports_with_no_typed_dict() -> None:
@@ -72,4 +72,4 @@ def test_convert_imports_with_no_typed_dict() -> None:
     ])
     # fmt: on
 
-    assert convert(source, show_imports=True) == expected
+    assert get_type_definitions(source, show_imports=True) == expected

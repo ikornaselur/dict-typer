@@ -225,9 +225,9 @@ In [1]: source = {
    ...: }
    ...:
 
-In [2]: from dict_typer import convert
+In [2]: from dict_typer import get_type_definitions
 
-In [3]: print(convert(source, show_imports=True))
+In [3]: print(get_type_definitions(source, show_imports=True))
 from typing import List, Union
 
 from typing_extensions import TypedDict
