@@ -1,5 +1,3 @@
-from typing import List
-
 from dict_typer import get_type_definitions
 
 
