@@ -141,6 +141,8 @@ class DefinitionBuilder:
             return MemberEntry(sequence_type_name, sub_members=list_item_types)
 
         if isinstance(item, dict):
+            if item == {}:
+                return MemberEntry("Dict")
             return self._convert_dict(
                 f"{key_to_class_name(key)}{self.type_postfix}", item
             )

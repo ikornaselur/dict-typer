@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Set, TypeVar
 
 from dict_typer.utils import is_valid_key
 
-KNOWN_TYPE_IMPORTS = ("List", "Tuple", "Set", "FrozenSet")
+KNOWN_TYPE_IMPORTS = ("List", "Tuple", "Set", "FrozenSet", "Dict")
 
 
 EntryType = TypeVar("EntryType", "MemberEntry", "DictEntry")
