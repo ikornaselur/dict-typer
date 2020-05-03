@@ -1,3 +1,5 @@
+from typing import List
+
 from dict_typer import convert
 
 
@@ -13,6 +15,21 @@ def test_convert_with_empty_list() -> None:
         "",
         "class RootType(TypedDict):",
         "    items: List",
+    ])
+    # fmt: on
+
+    assert expected == convert(source)
+
+
+def test_convert_empty_root_list() -> None:
+    source: List = []
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import List",
+        "",
+        "",
+        "RootType = List",
     ])
     # fmt: on
 

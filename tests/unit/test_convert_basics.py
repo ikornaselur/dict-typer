@@ -1,3 +1,5 @@
+from typing import List
+
 from dict_typer import convert
 
 

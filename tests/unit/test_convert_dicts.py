@@ -1,4 +1,39 @@
+from typing import Dict
+
 from dict_typer import convert
+
+
+def test_convert_empty_root_dict() -> None:
+    source: Dict = {}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import Dict",
+        "",
+        "",
+        "RootType = Dict",
+    ])
+    # fmt: on
+
+    assert expected == convert(source)
+
+
+def test_convert_with_nested_empty_dict() -> None:
+    source: Dict = {"nest": {}}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import Dict",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    nest: Dict",
+    ])
+    # fmt: on
+
+    assert expected == convert(source)
 
 
 def test_convert_with_nested_dict() -> None:

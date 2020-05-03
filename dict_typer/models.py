@@ -138,6 +138,8 @@ class DictEntry:
 
     @property
     def depends_on(self) -> Set[str]:
+        if not self.members:
+            return set()
         members = set.union(*self.members.values())
         return set.union(*[m.depends_on for m in members], {m.name for m in members})
 
