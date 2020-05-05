@@ -10,6 +10,7 @@ homepage = "https://github.com/ikornaselur/dict-typer"
 [tool.poetry.dependencies]
 python = "^3.6"
 click = "^7.1.1"
+rich = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
