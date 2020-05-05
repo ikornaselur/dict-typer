@@ -62,6 +62,9 @@ Usage: dict-typer [OPTIONS] [FILE]...
 
 Options:
   --imports / --no-imports  Show imports at the top, default: True
+  -r, --rich                Show rich output.
+  -l, --line-numbers        Show line numbers if rich.
+  --version                 Show the version and exit.
   --help                    Show this message and exit.
 
 -> % dict-typer ./.example.json
