@@ -174,23 +174,17 @@ class DictEntry:
             out.append(f'{self.name} = TypedDict("{self.name}", {{')
 
             for key, value in self.members.items():
-                if isinstance(value, DictEntry):
-                    out.append(f'{" " * self.indentation}"{key}": {value.name},')
-                else:
-                    out.append(
-                        f'{" " * self.indentation}"{key}": {sub_members_to_string(value)},'
-                    )
+                out.append(
+                    f'{" " * self.indentation}"{key}": {sub_members_to_string(value)},'
+                )
 
             out.append("})")
         else:
             out.append(f"class {self.name}(TypedDict):")
             for key, value in self.members.items():
-                if isinstance(value, DictEntry):
-                    out.append(f"{' ' * self.indentation}{key}: {value.name}")
-                else:
-                    out.append(
-                        f"{' ' * self.indentation}{key}: {sub_members_to_string(value)}"
-                    )
+                out.append(
+                    f"{' ' * self.indentation}{key}: {sub_members_to_string(value)}"
+                )
 
         return "\n".join(out)
 
