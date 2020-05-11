@@ -1,5 +1,6 @@
 #!/bin/bash
 echo "Checking if code lints..."
-poetry run mypy dict_typer tests/*
-poetry run flake8 dict_typer tests/*
-echo ""
+xargs -P 4 -I {} sh -c 'eval "$1"' - {} <<'EOF'
+make mypy
+make flake8
+EOF
