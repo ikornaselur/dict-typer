@@ -6,3 +6,6 @@ The fixtures are borrowed from the [examples section on json.org](https://json.o
 
 # sitepoint.com.exampleX.json
 The fixtures are borrowed from the [10 JSON Examples to Use in Your Projects](https://www.sitepoint.com/10-example-json-files/)
+
+# custom.exampleX.json
+Custom payloads for this library

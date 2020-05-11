@@ -10,7 +10,7 @@ def test_convert_hides_import_optionally() -> None:
 
     # fmt: off
     expected = "\n".join([
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    itemsList: List[Union[float, int, str]]",
         "    itemsTuple: Tuple[int]",
         "    itemsSet: Set[Union[float, int]]",
@@ -30,13 +30,13 @@ def test_convert_optionally_adds_imports_with_nested_defs() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class NestType(TypedDict):",
+        "class Nest(TypedDict):",
         "    itemsTuple: Tuple[Union[Set[Union[float, int]], int]]",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    itemsList: List[int]",
-        "    nest: NestType",
+        "    nest: Nest",
     ])
     # fmt: on
 
@@ -51,7 +51,7 @@ def test_convert_imports_with_no_typing_imports() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    id: int",
         "    value: str",
     ])
@@ -68,7 +68,7 @@ def test_convert_imports_with_no_typed_dict() -> None:
         "from typing import List",
         "",
         "",
-        "RootType = List[int]",
+        "Root = List[int]",
     ])
     # fmt: on
 

@@ -227,3 +227,8 @@ def test_sorting_dict_entry_with_sub_entry() -> None:
 
     assert sorted([entry, sub_entry], key=key_to_dependency_cmp) == [sub_entry, entry]
     assert sorted([sub_entry, entry], key=key_to_dependency_cmp) == [sub_entry, entry]
+
+
+def test_dict_entry_invalid_name_adds_underscore() -> None:
+    assert DictEntry("List").name == "List_"
+    assert DictEntry("None").name == "None_"

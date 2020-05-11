@@ -9,7 +9,7 @@ def test_convert_simple_json() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    id: int",
         "    item: str",
         "    progress: float",
@@ -47,7 +47,7 @@ def test_convert_base_types() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    bool_type: bool",
         "    bytearray_type: bytearray",
         "    bytes_types: bytes",
@@ -79,7 +79,7 @@ def test_convert_none() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    value: None",
     ])
     # fmt: on

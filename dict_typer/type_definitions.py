@@ -43,7 +43,7 @@ class DefinitionBuilder:
         self,
         source: Union[Dict, List],
         root_type_name: str = "Root",
-        type_postfix: str = "Type",
+        type_postfix: str = "",
         show_imports: bool = True,
     ) -> None:
         self.definitions = []
@@ -213,7 +213,7 @@ class DefinitionBuilder:
 def get_type_definitions(
     source: Union[Dict, List],
     root_type_name: str = "Root",
-    type_postfix: str = "Type",
+    type_postfix: str = "",
     show_imports: bool = True,
 ) -> str:
     if not isinstance(source, (list, dict)):

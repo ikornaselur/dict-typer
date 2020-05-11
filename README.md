@@ -17,10 +17,10 @@ example, if we take the output generated from the Example section below and
 imagine it's a response we get from an api. We can plug it in like this:
 
 ```python
-from project.types import RootType
+from project.types import Root
 
 
-def get_from_api() -> RootType:
+def get_from_api() -> Root:
     pass
 
 
@@ -39,7 +39,7 @@ and if we run mypy on this
 ```shell
 -> % poetry run mypy test.py
 test.py:43: error: Unsupported operand types for + ("str" and "int")
-test.py:44: error: TypedDict "NestedDictType" has no key 'non_existant'
+test.py:44: error: TypedDict "NestedDict" has no key 'non_existant'
 test.py:46: error: Unsupported operand types for + ("None" and "int")
 test.py:46: error: Unsupported operand types for + ("str" and "int")
 test.py:46: note: Left operand is of type "Union[None, int, str]"
@@ -58,6 +58,7 @@ Either supply a path to a file or pipe json output to `dict-typer`
 
 ```help
 -> % dict-typer --help
+
 Usage: dict-typer [OPTIONS] [FILE]...
 
 Options:
@@ -93,7 +94,7 @@ which is valid json, but has the invalid identifier `numeric-id` and reserved
 keyword `from`, meaning the definition
 
 ```python
-class RootType(TypedDict):
+class Root(TypedDict):
     numeric-id: int
     from: str
 ```
@@ -103,7 +104,7 @@ way](https://www.python.org/dev/peps/pep-0589/#alternative-syntax) to define
 those types, looking like this
 
 ```python
-RootType = TypedDict('TypedDict', {'numeric-id': int, 'from': str'})
+Root = TypedDict('Root', {'numeric-id': int, 'from': str'})
 ```
 
 which is not as readable, but valid.
@@ -123,10 +124,10 @@ the type of the list. For example, the list `[1, "2", 3.0, { "id": 123 }, {
 from typing_extensions import TypedDict
 
 
-class RootItemType(TypedDict):
+class RootItem(TypedDict):
     id: int
 
-RootType = List[Union[RootItemType, float, int, str]]
+Root = List[Union[RootItem, float, int, str]]
 ```
 
 ## Examples
@@ -167,35 +168,35 @@ from typing import List, Union
 from typing_extensions import TypedDict
 
 
-class NestedDictType(TypedDict):
+class NestedDict(TypedDict):
     number: int
     string: str
 
 
-class Level2Type(TypedDict):
-    level3: NestedDictType
+class Level2(TypedDict):
+    level3: NestedDict
 
 
-class MultipeLevelsType(TypedDict):
-    level2: Level2Type
+class MultipeLevels(TypedDict):
+    level2: Level2
 
 
-NestedInvalidType = TypedDict("NestedInvalidType", {
+NestedInvalid = TypedDict("NestedInvalid", {
     "numeric-id": int,
     "from": str,
 })
 
 
-class RootType(TypedDict):
+class Root(TypedDict):
     number_int: int
     number_float: float
     string: str
     list_single_type: List[str]
     list_mixed_type: List[Union[float, int, str]]
-    nested_dict: NestedDictType
-    same_nested_dict: NestedDictType
-    multipe_levels: MultipeLevelsType
-    nested_invalid: NestedInvalidType
+    nested_dict: NestedDict
+    same_nested_dict: NestedDict
+    multipe_levels: MultipeLevels
+    nested_invalid: NestedInvalid
     optional_items: List[Union[None, int, str]]
 ```
 
@@ -236,34 +237,34 @@ from typing import List, Union
 from typing_extensions import TypedDict
 
 
-class NestedDictType(TypedDict):
+class NestedDict(TypedDict):
     number: int
     string: str
 
 
-class Level2Type(TypedDict):
-    level3: NestedDictType
+class Level2(TypedDict):
+    level3: NestedDict
 
 
-class MultipeLevelsType(TypedDict):
-    level2: Level2Type
+class MultipeLevels(TypedDict):
+    level2: Level2
 
 
-NestedInvalidType = TypedDict("NestedInvalidType", {
+NestedInvalid = TypedDict("NestedInvalid", {
     "numeric-id": int,
     "from": str,
 })
 
 
-class RootType(TypedDict):
+class Root(TypedDict):
     number_int: int
     number_float: float
     string: str
     list_single_type: List[str]
     list_mixed_type: List[Union[float, int, str]]
-    nested_dict: NestedDictType
-    same_nested_dict: NestedDictType
-    multipe_levels: MultipeLevelsType
-    nested_invalid: NestedInvalidType
+    nested_dict: NestedDict
+    same_nested_dict: NestedDict
+    multipe_levels: MultipeLevels
+    nested_invalid: NestedInvalid
     optional_items: List[Union[None, int, str]]
 ```

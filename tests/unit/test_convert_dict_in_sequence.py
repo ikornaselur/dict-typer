@@ -11,12 +11,12 @@ def test_convert_list_of_repeated_dicts() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class DictListItem0Type(TypedDict):",
+        "class DictListItem0(TypedDict):",
         "    id: int",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    dictList: List[DictListItem0Type]",
+        "class Root(TypedDict):",
+        "    dictList: List[DictListItem0]",
     ])
     # fmt: on
 
@@ -33,20 +33,20 @@ def test_convert_list_of_mixed_dicts() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class DictListItem0Type(TypedDict):",
+        "class DictListItem0(TypedDict):",
         "    foo: int",
         "",
         "",
-        "class DictListItem1Type(TypedDict):",
+        "class DictListItem1(TypedDict):",
         "    bar: int",
         "",
         "",
-        "class DictListItem2Type(TypedDict):",
+        "class DictListItem2(TypedDict):",
         "    baz: int",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    dictList: List[Union[DictListItem0Type, DictListItem1Type, DictListItem2Type]]",
+        "class Root(TypedDict):",
+        "    dictList: List[Union[DictListItem0, DictListItem1, DictListItem2]]",
     ])
     # fmt: on
 
@@ -63,12 +63,12 @@ def test_convert_list_of_repeated_dicts_different_types_combined() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class DictListItem0Type(TypedDict):",
+        "class DictListItem0(TypedDict):",
         "    id: Union[float, int, str]",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    dictList: List[DictListItem0Type]",
+        "class Root(TypedDict):",
+        "    dictList: List[DictListItem0]",
     ])
     # fmt: on
 

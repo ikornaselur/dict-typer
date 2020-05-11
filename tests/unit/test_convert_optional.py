@@ -9,7 +9,7 @@ def test_convert_single_optional_in_list() -> None:
         "from typing import List, Optional",
         "",
         "",
-        "RootType = List[Optional[int]]",
+        "Root = List[Optional[int]]",
     ])
     # fmt: on
 
@@ -24,7 +24,7 @@ def test_convert_not_optional_if_multiple_types_with_none() -> None:
         "from typing import List, Union",
         "",
         "",
-        "RootType = List[Union[None, float, int]]",
+        "Root = List[Union[None, float, int]]",
     ])
     # fmt: on
 
@@ -44,14 +44,14 @@ def test_convert_optional_combined_dicts() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class OwnerType(TypedDict):",
+        "class Owner(TypedDict):",
         "    name: str",
         "    age: Optional[int]",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    owner: OwnerType",
-        "    coOwner: OwnerType",
+        "class Root(TypedDict):",
+        "    owner: Owner",
+        "    coOwner: Owner",
     ])
     # fmt: on
 

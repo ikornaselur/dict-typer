@@ -11,7 +11,7 @@ def test_convert_empty_root_dict() -> None:
         "from typing import Dict",
         "",
         "",
-        "RootType = Dict",
+        "Root = Dict",
     ])
     # fmt: on
 
@@ -28,7 +28,7 @@ def test_convert_with_nested_empty_dict() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    nest: Dict",
     ])
     # fmt: on
@@ -44,12 +44,12 @@ def test_convert_with_nested_dict() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class NestType(TypedDict):",
+        "class Nest(TypedDict):",
         "    foo: str",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    nest: NestType",
+        "class Root(TypedDict):",
+        "    nest: Nest",
     ])
     # fmt: on
 
@@ -64,20 +64,20 @@ def test_convert_with_multiple_levels_nested_dict() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class Level3Type(TypedDict):",
+        "class Level3(TypedDict):",
         "    level4: str",
         "",
         "",
-        "class Level2Type(TypedDict):",
-        "    level3: Level3Type",
+        "class Level2(TypedDict):",
+        "    level3: Level3",
         "",
         "",
-        "class Level1Type(TypedDict):",
-        "    level2: Level2Type",
+        "class Level1(TypedDict):",
+        "    level2: Level2",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    level1: Level1Type",
+        "class Root(TypedDict):",
+        "    level1: Level1",
     ])
     # fmt: on
 
@@ -92,17 +92,17 @@ def test_convert_with_multiple_nested_dict() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class NestType(TypedDict):",
+        "class Nest(TypedDict):",
         "    foo: str",
         "",
         "",
-        "class OtherNestType(TypedDict):",
+        "class OtherNest(TypedDict):",
         "    baz: str",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    nest: NestType",
-        "    other_nest: OtherNestType",
+        "class Root(TypedDict):",
+        "    nest: Nest",
+        "    other_nest: OtherNest",
     ])
     # fmt: on
 
@@ -121,18 +121,18 @@ def test_convert_with_repeated_nested_dict() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class NestType(TypedDict):",
+        "class Nest(TypedDict):",
         "    foo: str",
         "",
         "",
-        "class UniqueNestType(TypedDict):",
+        "class UniqueNest(TypedDict):",
         "    baz: str",
         "",
         "",
-        "class RootType(TypedDict):",
-        "    nest: NestType",
-        "    other_nest: NestType",
-        "    unique_nest: UniqueNestType",
+        "class Root(TypedDict):",
+        "    nest: Nest",
+        "    other_nest: Nest",
+        "    unique_nest: UniqueNest",
     ])
     # fmt: on
 
@@ -152,19 +152,19 @@ def test_convert_nested_overlapping_dict() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class XType(TypedDict):",
+        "class X(TypedDict):",
         "    foo: str",
         "",
         "",
-        "class XType1(TypedDict):",
+        "class X1(TypedDict):",
         "    baz: str",
         "",
         "",
-        "class RootItem0Type(TypedDict):",
-        "    x: Union[XType, XType1]",
+        "class RootItem0(TypedDict):",
+        "    x: Union[X, X1]",
         "",
         "",
-        "RootType = List[RootItem0Type]",
+        "Root = List[RootItem0]",
     ])
     # fmt: on
 
