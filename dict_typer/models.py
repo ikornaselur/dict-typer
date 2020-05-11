@@ -14,7 +14,7 @@ DictMembers = Dict[str, SubMembers]
 def is_valid_name(name: str) -> bool:
     if not is_valid_key(name):
         return False
-    return not name in KNOWN_TYPE_IMPORTS
+    return name not in KNOWN_TYPE_IMPORTS
 
 
 def sub_members_to_string(sub_members: SubMembers) -> str:
