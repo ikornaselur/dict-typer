@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Set, TypeVar
 
 from dict_typer.utils import is_valid_key
 
-KNOWN_TYPE_IMPORTS = ("List", "Tuple", "Set", "FrozenSet", "Dict")
+KNOWN_TYPE_IMPORTS = ("List", "Tuple", "Set", "FrozenSet")
 
 
 EntryType = TypeVar("EntryType", "MemberEntry", "DictEntry")
@@ -124,8 +124,6 @@ class DictEntry:
         self.force_alternative = force_alternative
 
     def get_imports(self) -> Set[str]:
-        if not self.members:
-            return {"Dict"}
         imports = set()
         for sub_members in self.members.values():
             imports |= sub_members_to_imports(sub_members)
@@ -172,26 +170,29 @@ class DictEntry:
         return f"<DictEntry ({self.name})>"
 
     def __str__(self) -> str:
-        if not self.members:
-            return ""
-
         out: List[str] = []
 
         if self.force_alternative or self.any_invalid_key():
-            out.append(f'{self.name} = TypedDict("{self.name}", {{')
+            if not self.members:
+                out.append(f'{self.name} = TypedDict("{self.name}", {{}}')
+            else:
+                out.append(f'{self.name} = TypedDict("{self.name}", {{')
 
-            for key, value in self.members.items():
-                out.append(
-                    f'{" " * self.indentation}"{key}": {sub_members_to_string(value)},'
-                )
+                for key, value in self.members.items():
+                    out.append(
+                        f'{" " * self.indentation}"{key}": {sub_members_to_string(value)},'
+                    )
 
-            out.append("})")
+                out.append("})")
         else:
             out.append(f"class {self.name}(TypedDict):")
-            for key, value in self.members.items():
-                out.append(
-                    f"{' ' * self.indentation}{key}: {sub_members_to_string(value)}"
-                )
+            if not self.members:
+                out.append(f'{" " * self.indentation}pass')
+            else:
+                for key, value in self.members.items():
+                    out.append(
+                        f"{' ' * self.indentation}{key}: {sub_members_to_string(value)}"
+                    )
 
         return "\n".join(out)
 
