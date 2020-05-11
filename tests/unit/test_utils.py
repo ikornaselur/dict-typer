@@ -14,7 +14,7 @@ def test_is_valid_key_rejects_keywords() -> None:
 
 
 def test_is_valid_key_rejects_invalid_identifiers() -> None:
-    keys = ["foo-bar", "123" "?", "a space"]
+    keys = ["foo-bar", "123", "?", "a space"]
 
     assert not any(is_valid_key(key) for key in keys)
 
