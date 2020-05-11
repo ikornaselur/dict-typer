@@ -160,7 +160,7 @@ class DefinitionBuilder:
         else:
             self._add_definition(
                 self._convert_list(
-                    f"List", self.source, item_name=f"{self.root_type_name}Item"
+                    "List", self.source, item_name=f"{self.root_type_name}Item"
                 )
             )
 
