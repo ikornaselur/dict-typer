@@ -11,6 +11,12 @@ SubMembers = Set[EntryType]
 DictMembers = Dict[str, SubMembers]
 
 
+def is_valid_name(name: str) -> bool:
+    if not is_valid_key(name):
+        return False
+    return not name in KNOWN_TYPE_IMPORTS
+
+
 def sub_members_to_string(sub_members: SubMembers) -> str:
     def get_member_value(item: EntryType) -> str:
         """ Only reference DictEntry by name. """
@@ -109,7 +115,10 @@ class DictEntry:
         indentation: int = 4,
         force_alternative: bool = False,
     ) -> None:
-        self.name = name
+        if is_valid_name(name):
+            self.name = name
+        else:
+            self.name = f"{name}_"
         self.members = members or {}
         self.indentation = indentation
         self.force_alternative = force_alternative
