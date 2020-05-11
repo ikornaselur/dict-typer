@@ -9,7 +9,7 @@ from rich.syntax import Syntax
 
 from dict_typer.type_definitions import get_type_definitions
 
-__version__ = "0.1.9"
+__version__ = "0.1.10"
 
 
 @click.command()
