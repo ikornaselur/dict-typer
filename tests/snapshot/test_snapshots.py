@@ -28,6 +28,7 @@ def sitepoint_com_fixture(num: int) -> Union[Dict, List]:
         "sitepoint.com.example2",
         "sitepoint.com.example3",
         "sitepoint.com.example4",
+        "custom.example1",
     ],
 )
 def test_snapshots(snapshot: Any, fixture: str) -> None:

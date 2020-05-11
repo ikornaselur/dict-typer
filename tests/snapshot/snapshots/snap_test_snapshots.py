@@ -12,72 +12,72 @@ snapshots['test_snapshots[json.org.example1] 1'] = '''from typing import List
 from typing_extensions import TypedDict
 
 
-class GlossDefType(TypedDict):
+class GlossDef(TypedDict):
     para: str
     GlossSeeAlso: List[str]
 
 
-class GlossEntryType(TypedDict):
+class GlossEntry(TypedDict):
     ID: str
     SortAs: str
     GlossTerm: str
     Acronym: str
     Abbrev: str
-    GlossDef: GlossDefType
+    GlossDef: GlossDef
     GlossSee: str
 
 
-class GlossListType(TypedDict):
-    GlossEntry: GlossEntryType
+class GlossList(TypedDict):
+    GlossEntry: GlossEntry
 
 
-class GlossDivType(TypedDict):
+class GlossDiv(TypedDict):
     title: str
-    GlossList: GlossListType
+    GlossList: GlossList
 
 
-class GlossaryType(TypedDict):
+class Glossary(TypedDict):
     title: str
-    GlossDiv: GlossDivType
+    GlossDiv: GlossDiv
 
 
-class RootType(TypedDict):
-    glossary: GlossaryType'''
+class Root(TypedDict):
+    glossary: Glossary'''
 
 snapshots['test_snapshots[json.org.example2] 1'] = '''from typing import List
 
 from typing_extensions import TypedDict
 
 
-class MenuitemItem0Type(TypedDict):
+class MenuitemItem0(TypedDict):
     value: str
     onclick: str
 
 
-class PopupType(TypedDict):
-    menuitem: List[MenuitemItem0Type]
+class Popup(TypedDict):
+    menuitem: List[MenuitemItem0]
 
 
-class MenuType(TypedDict):
+class Menu(TypedDict):
     id: str
     value: str
-    popup: PopupType
+    popup: Popup
 
 
-class RootType(TypedDict):
-    menu: MenuType'''
+class Root(TypedDict):
+    menu: Menu'''
 
 snapshots['test_snapshots[json.org.example3] 1'] = '''from typing_extensions import TypedDict
 
 
-class WindowType(TypedDict):
+class Window(TypedDict):
     title: str
     name: str
     width: int
     height: int
 
 
-class ImageType(TypedDict):
+class Image(TypedDict):
     src: str
     name: str
     hOffset: int
@@ -85,7 +85,7 @@ class ImageType(TypedDict):
     alignment: str
 
 
-class TextType(TypedDict):
+class Text(TypedDict):
     data: str
     size: int
     style: str
@@ -96,22 +96,22 @@ class TextType(TypedDict):
     onMouseUp: str
 
 
-class WidgetType(TypedDict):
+class Widget(TypedDict):
     debug: str
-    window: WindowType
-    image: ImageType
-    text: TextType
+    window: Window
+    image: Image
+    text: Text
 
 
-class RootType(TypedDict):
-    widget: WidgetType'''
+class Root(TypedDict):
+    widget: Widget'''
 
 snapshots['test_snapshots[json.org.example4] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
 
-InitParamType = TypedDict("InitParamType", {
+InitParam = TypedDict("InitParam", {
     "configGlossary:installationAt": str,
     "configGlossary:adminEmail": str,
     "configGlossary:poweredBy": str,
@@ -157,12 +157,12 @@ InitParamType = TypedDict("InitParamType", {
 })
 
 
-class InitParamType1(TypedDict):
+class InitParam1(TypedDict):
     mailHost: str
     mailHostOverride: str
 
 
-class InitParamType2(TypedDict):
+class InitParam2(TypedDict):
     templatePath: str
     log: int
     logLocation: str
@@ -178,20 +178,20 @@ class InitParamType2(TypedDict):
     betaServer: bool
 
 
-ServletItem0Type = TypedDict("ServletItem0Type", {
+ServletItem0 = TypedDict("ServletItem0", {
     "servlet-name": str,
     "servlet-class": str,
-    "init-param": Union[InitParamType, InitParamType1, InitParamType2],
+    "init-param": Union[InitParam, InitParam1, InitParam2],
 })
 
 
-ServletItem2Type = TypedDict("ServletItem2Type", {
+ServletItem2 = TypedDict("ServletItem2", {
     "servlet-name": str,
     "servlet-class": str,
 })
 
 
-class ServletMappingType(TypedDict):
+class ServletMapping(TypedDict):
     cofaxCDS: str
     cofaxEmail: str
     cofaxAdmin: str
@@ -199,21 +199,21 @@ class ServletMappingType(TypedDict):
     cofaxTools: str
 
 
-TaglibType = TypedDict("TaglibType", {
+Taglib = TypedDict("Taglib", {
     "taglib-uri": str,
     "taglib-location": str,
 })
 
 
-WebAppType = TypedDict("WebAppType", {
-    "servlet": List[Union[ServletItem0Type, ServletItem2Type]],
-    "servlet-mapping": ServletMappingType,
-    "taglib": TaglibType,
+WebApp = TypedDict("WebApp", {
+    "servlet": List[Union[ServletItem0, ServletItem2]],
+    "servlet-mapping": ServletMapping,
+    "taglib": Taglib,
 })
 
 
-RootType = TypedDict("RootType", {
-    "web-app": WebAppType,
+Root = TypedDict("Root", {
+    "web-app": WebApp,
 })'''
 
 snapshots['test_snapshots[json.org.example5] 1'] = '''from typing import List, Union
@@ -221,135 +221,135 @@ snapshots['test_snapshots[json.org.example5] 1'] = '''from typing import List, U
 from typing_extensions import TypedDict
 
 
-class ItemsItem0Type(TypedDict):
+class ItemsItem0(TypedDict):
     id: str
 
 
-class ItemsItem1Type(TypedDict):
+class ItemsItem1(TypedDict):
     id: str
     label: str
 
 
-class MenuType(TypedDict):
+class Menu(TypedDict):
     header: str
-    items: List[Union[ItemsItem0Type, ItemsItem1Type, None]]
+    items: List[Union[ItemsItem0, ItemsItem1, None]]
 
 
-class RootType(TypedDict):
-    menu: MenuType'''
+class Root(TypedDict):
+    menu: Menu'''
 
 snapshots['test_snapshots[sitepoint.com.example1] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
 
-class CodeType(TypedDict):
+class Code(TypedDict):
     rgba: List[int]
     hex: str
 
 
-class ColorsItem0Type(TypedDict):
+class ColorsItem0(TypedDict):
     color: str
     category: str
     type: str
-    code: CodeType
+    code: Code
 
 
-class ColorsItem1Type(TypedDict):
+class ColorsItem1(TypedDict):
     color: str
     category: str
-    code: CodeType
+    code: Code
 
 
-class RootType(TypedDict):
-    colors: List[Union[ColorsItem0Type, ColorsItem1Type]]'''
+class Root(TypedDict):
+    colors: List[Union[ColorsItem0, ColorsItem1]]'''
 
 snapshots['test_snapshots[sitepoint.com.example2] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
 
-class MarkersItem0Type(TypedDict):
+class MarkersItem0(TypedDict):
     name: str
     position: List[float]
 
 
-class MarkersItem1Type(TypedDict):
+class MarkersItem1(TypedDict):
     name: str
     location: List[float]
 
 
-class RootType(TypedDict):
-    markers: List[Union[MarkersItem0Type, MarkersItem1Type]]'''
+class Root(TypedDict):
+    markers: List[Union[MarkersItem0, MarkersItem1]]'''
 
 snapshots['test_snapshots[sitepoint.com.example3] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
 
-class PageInfoType(TypedDict):
+class PageInfo(TypedDict):
     totalResults: int
     resultsPerPage: int
 
 
-class IdType(TypedDict):
+class Id(TypedDict):
     kind: str
     channelId: str
 
 
-class IdType1(TypedDict):
+class Id1(TypedDict):
     kind: str
     videoId: str
 
 
-class ItemsItem0Type(TypedDict):
+class ItemsItem0(TypedDict):
     kind: str
     etag: str
-    id: Union[IdType, IdType1]
+    id: Union[Id, Id1]
 
 
-class RootType(TypedDict):
+class Root(TypedDict):
     kind: str
     etag: str
     nextPageToken: str
     regionCode: str
-    pageInfo: PageInfoType
-    items: List[ItemsItem0Type]'''
+    pageInfo: PageInfo
+    items: List[ItemsItem0]'''
 
 snapshots['test_snapshots[sitepoint.com.example4] 1'] = '''from typing import List, Union
 
 from typing_extensions import TypedDict
 
 
-class HashtagsItem0Type(TypedDict):
+class HashtagsItem0(TypedDict):
     text: str
     indices: List[int]
 
 
-class UrlsItem0Type(TypedDict):
+class UrlsItem0(TypedDict):
     url: str
     expanded_url: str
     display_url: str
     indices: List[int]
 
 
-class EntitiesType(TypedDict):
-    hashtags: List[HashtagsItem0Type]
+class Entities(TypedDict):
+    hashtags: List[HashtagsItem0]
     symbols: List
     user_mentions: List
-    urls: List[UrlsItem0Type]
+    urls: List[UrlsItem0]
 
 
-class UrlType(TypedDict):
-    urls: Union[List, List[UrlsItem0Type]]
+class Url(TypedDict):
+    urls: Union[List, List[UrlsItem0]]
 
 
-class EntitiesType1(TypedDict):
-    url: UrlType
-    description: UrlType
+class Entities1(TypedDict):
+    url: Url
+    description: Url
 
 
-class UserType(TypedDict):
+class User(TypedDict):
     id: int
     id_str: str
     name: str
@@ -357,7 +357,7 @@ class UserType(TypedDict):
     location: str
     description: str
     url: str
-    entities: EntitiesType1
+    entities: Entities1
     protected: bool
     followers_count: int
     friends_count: int
@@ -368,15 +368,85 @@ class UserType(TypedDict):
     time_zone: str
 
 
-class RootItem0Type(TypedDict):
+class RootItem0(TypedDict):
     created_at: str
     id: int
     id_str: str
     text: str
     truncated: bool
-    entities: EntitiesType
+    entities: Entities
     source: str
-    user: UserType
+    user: User
 
 
-RootType = List[RootItem0Type]'''
+Root = List[RootItem0]'''
+
+snapshots['test_snapshots[custom.example1] 1'] = '''from typing import List, Union
+
+from typing_extensions import TypedDict
+
+
+class DataItem0(TypedDict):
+    timestamp: str
+    text: str
+    id: str
+
+
+class Comments(TypedDict):
+    data: Union[List[DataItem01], List[DataItem0]]
+
+
+class Owner(TypedDict):
+    id: str
+
+
+class Cursors(TypedDict):
+    after: str
+
+
+class Paging(TypedDict):
+    cursors: Cursors
+    next: str
+
+
+class Comments1(TypedDict):
+    data: List[DataItem0]
+    paging: Paging
+
+
+class RootItem0(TypedDict):
+    caption: str
+    comments: Union[Comments, Comments1]
+    comments_count: int
+    id: str
+    ig_id: str
+    is_comment_enabled: bool
+    like_count: int
+    media_type: str
+    media_url: str
+    owner: Owner
+    permalink: str
+    shortcode: str
+    timestamp: str
+    username: str
+
+
+class RootItem1(TypedDict):
+    caption: str
+    children: Comments
+    comments: Union[Comments, Comments1]
+    comments_count: int
+    id: str
+    ig_id: str
+    is_comment_enabled: bool
+    like_count: int
+    media_type: str
+    media_url: str
+    owner: Owner
+    permalink: str
+    shortcode: str
+    timestamp: str
+    username: str
+
+
+Root = List[Union[RootItem0, RootItem1]]'''
