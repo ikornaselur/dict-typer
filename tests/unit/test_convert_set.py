@@ -11,7 +11,7 @@ def test_convert_with_empty_set() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: Set",
     ])
     # fmt: on
@@ -29,7 +29,7 @@ def test_convert_with_simple_set() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: Set[int]",
     ])
     # fmt: on
@@ -47,7 +47,7 @@ def test_convert_with_mixed_set() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: Set[Union[float, int, str]]",
     ])
     # fmt: on

@@ -13,7 +13,7 @@ def test_convert_with_empty_list() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: List",
     ])
     # fmt: on
@@ -29,7 +29,7 @@ def test_convert_empty_root_list() -> None:
         "from typing import List",
         "",
         "",
-        "RootType = List",
+        "Root = List",
     ])
     # fmt: on
 
@@ -46,7 +46,7 @@ def test_convert_with_simple_list() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: List[int]",
     ])
     # fmt: on
@@ -64,7 +64,7 @@ def test_convert_with_mixed_list() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: List[Union[float, int, str]]",
     ])
     # fmt: on

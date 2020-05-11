@@ -9,7 +9,7 @@ def test_convert_with_invalid_key_names() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        'RootType = TypedDict("RootType", {',
+        'Root = TypedDict("Root", {',
         '    "invalid-key": int,',
         '    "from": str,',
         '})'
@@ -27,12 +27,12 @@ def test_convert_with_invalid_key_names_nested() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class InvalidKeyType(TypedDict):",
+        "class InvalidKey(TypedDict):",
         "    id: int",
         "",
         "",
-        'RootType = TypedDict("RootType", {',
-        '    "invalid-key": InvalidKeyType,',
+        'Root = TypedDict("Root", {',
+        '    "invalid-key": InvalidKey,',
         '})'
     ])
     # fmt: on

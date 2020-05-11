@@ -11,7 +11,7 @@ def test_convert_with_empty_tuple() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: Tuple",
     ])
     # fmt: on
@@ -29,7 +29,7 @@ def test_convert_with_simple_tuple() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: Tuple[int]",
     ])
     # fmt: on
@@ -47,7 +47,7 @@ def test_convert_with_mixed_tuple() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootType(TypedDict):",
+        "class Root(TypedDict):",
         "    items: Tuple[Union[float, int, str]]",
     ])
     # fmt: on

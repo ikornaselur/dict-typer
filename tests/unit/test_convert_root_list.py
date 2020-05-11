@@ -11,11 +11,11 @@ def test_convert_root_list_single_item() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootItem0Type(TypedDict):",
+        "class RootItem0(TypedDict):",
         "    id: int",
         "",
         "",
-        "RootType = List[RootItem0Type]",
+        "Root = List[RootItem0]",
     ])
     # fmt: on
 
@@ -36,11 +36,11 @@ def test_convert_root_list_multiple_items() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootItem0Type(TypedDict):",
+        "class RootItem0(TypedDict):",
         "    id: int",
         "",
         "",
-        "RootType = List[RootItem0Type]",
+        "Root = List[RootItem0]",
     ])
     # fmt: on
 
@@ -62,15 +62,15 @@ def test_convert_root_list_multiple_mixed_items() -> None:
         "from typing_extensions import TypedDict",
         "",
         "",
-        "class RootItem0Type(TypedDict):",
+        "class RootItem0(TypedDict):",
         "    id: int",
         "",
         "",
-        "class RootItem1Type(TypedDict):",
+        "class RootItem1(TypedDict):",
         "    value: str",
         "",
         "",
-        "RootType = List[Union[RootItem0Type, RootItem1Type]]",
+        "Root = List[Union[RootItem0, RootItem1]]",
     ])
     # fmt: on
 
@@ -85,7 +85,7 @@ def test_convert_root_list_mixed_non_dict() -> None:
         "from typing import List, Union",
         "",
         "",
-        "RootType = List[Union[float, int, str]]",
+        "Root = List[Union[float, int, str]]",
     ])
     # fmt: on
 
