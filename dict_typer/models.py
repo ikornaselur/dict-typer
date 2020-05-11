@@ -128,8 +128,6 @@ class DictEntry:
             return {"Dict"}
         imports = set()
         for sub_members in self.members.values():
-            for sub_member in sub_members:
-                imports |= sub_member.get_imports()
             imports |= sub_members_to_imports(sub_members)
         return imports
 
