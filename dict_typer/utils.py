@@ -16,7 +16,7 @@ def key_to_class_name(key: str) -> str:
     # Then split each if camelcase
     parts2: List[str] = []
     for part in parts1:
-        if part.islower() or part.islower():
+        if part.islower():
             parts2.append(part)
             continue
 
