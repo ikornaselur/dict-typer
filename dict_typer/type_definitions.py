@@ -63,7 +63,6 @@ class DefinitionBuilder:
         """
         if isinstance(entry, MemberEntry):
             self.root_list.add(entry)
-            return entry
         else:
             dicts_only = [d for d in self.definitions if isinstance(d, DictEntry)]
             for definition in dicts_only:
@@ -79,7 +78,7 @@ class DefinitionBuilder:
                         new_name = f"{entry.name}{idx}"
                     entry.name = new_name
             self.definitions.append(entry)
-            return entry
+        return entry
 
     def _convert_list(self, key: str, lst: List, item_name: str) -> MemberEntry:
         entry = MemberEntry(key)
@@ -141,8 +140,6 @@ class DefinitionBuilder:
             return MemberEntry(sequence_type_name, sub_members=list_item_types)
 
         if isinstance(item, dict):
-            if item == {}:
-                return MemberEntry("Dict")
             return self._convert_dict(
                 f"{key_to_class_name(key)}{self.type_postfix}", item
             )
@@ -163,7 +160,7 @@ class DefinitionBuilder:
         else:
             self._add_definition(
                 self._convert_list(
-                    f"List", self.source, item_name=f"{self.root_type_name}Item"
+                    "List", self.source, item_name=f"{self.root_type_name}Item"
                 )
             )
 
@@ -175,7 +172,7 @@ class DefinitionBuilder:
             typed_dict_import = False
 
             for definition in self.definitions:
-                if isinstance(definition, DictEntry) and definition.members:
+                if isinstance(definition, DictEntry):
                     typed_dict_import = True
                 typing_imports |= definition.get_imports()
             if self.root_list:
@@ -201,11 +198,6 @@ class DefinitionBuilder:
                 if len(self.definitions):
                     self._output += "\n\n"
             self._output += f"{self.root_type_name}{self.type_postfix} = {sub_members_to_string(self.root_list)}"
-        # Special case with root being empty Dict
-        if self.source == {}:
-            if len(self._output):
-                self._output += "\n"
-            self._output += f"{self.root_type_name}{self.type_postfix} = Dict"
 
         return self._output
 

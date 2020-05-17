@@ -8,10 +8,11 @@ def test_convert_empty_root_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
-        "from typing import Dict",
+        "from typing_extensions import TypedDict",
         "",
         "",
-        "Root = Dict",
+        "class Root(TypedDict):",
+        "    pass",
     ])
     # fmt: on
 
@@ -23,13 +24,15 @@ def test_convert_with_nested_empty_dict() -> None:
 
     # fmt: off
     expected = "\n".join([
-        "from typing import Dict",
-        "",
         "from typing_extensions import TypedDict",
         "",
         "",
+        "class Nest(TypedDict):",
+        "    pass",
+        "",
+        "",
         "class Root(TypedDict):",
-        "    nest: Dict",
+        "    nest: Nest",
     ])
     # fmt: on
 
