@@ -5,25 +5,29 @@ from dict_typer import get_type_definitions
 
 # fmt: off
 TEST_SOURCE = {
-    "foo": "bar",
-    "items": [1, "2", 3.0],
-    "nested": {
-        "id": 1,
-        "value": "val",
+    "number_int": 123,
+    "number_float": 3.0,
+    "string": "string",
+    "list_single_type": ["a", "b", "c"],
+    "list_mixed_type": ["1", 2, 3.0],
+    "nested_dict": {
+        "number": 1,
+        "string": "value"
     },
-    "same_type_other_nested": {
-        "id": 2,
-        "value": "hello",
+    "same_nested_dict": {
+        "number": 2,
+        "string": "different value"
     },
-    "subsets": {
-        "first": {1, 2},
-        "second": {3, 4},
-        "third": {5, 6},
+    "multipe_levels": {
+        "level2": {
+            "level3": {
+                "number": 3,
+                "string": "more values"
+            }
+        }
     },
-    "nestedInvalid": {
-        "foo-bar": "string",
-        "from": "far away",
-    }
+    "nested_invalid": {"numeric-id": 123, "from": "far away"},
+    "optional_items": [1, 2, "3", "4", None, 5, 6, None]
 }
 # fmt: on
 

@@ -1,4 +1,7 @@
+import pytest
+
 from dict_typer import get_type_definitions
+from dict_typer.type_definitions import Source
 
 
 def test_convert_simple_json() -> None:
@@ -17,6 +20,24 @@ def test_convert_simple_json() -> None:
     # fmt: on
 
     assert expected == get_type_definitions(source)
+
+
+def test_convert_with_postfix() -> None:
+    source = {"id": 123, "item": "value", "progress": 0.71}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class RootType(TypedDict):",
+        "    id: int",
+        "    item: str",
+        "    progress: float",
+    ])
+    # fmt: on
+
+    assert expected == get_type_definitions(source, type_postfix="Type")
 
 
 def test_convert_base_types() -> None:
@@ -85,3 +106,11 @@ def test_convert_none() -> None:
     # fmt: on
 
     assert expected == get_type_definitions(source)
+
+
+@pytest.mark.parametrize(
+    "source,expected",
+    [("foo", "str"), (123, "int"), (10.0, "float"), (True, "bool"), (None, "None")],
+)
+def test_convert_base_root_values(source: Source, expected: str) -> None:
+    assert get_type_definitions(source) == f"Root = {expected}"

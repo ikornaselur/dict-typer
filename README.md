@@ -3,6 +3,8 @@
 A simple tool to take a json payload and convert it into Python TypedDict class
 definitions
 
+A web version is available on https://pytyper.dev/
+
 ## Why is this useful?
 
 When dealing with API responses, you're very likely to be using JSON responses,

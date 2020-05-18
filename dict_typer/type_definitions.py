@@ -1,9 +1,7 @@
 from typing import Any, Dict, List, Optional, Set, Tuple, Type, Union
 
-from dict_typer.exceptions import ConvertException
 from dict_typer.models import (
     DictEntry,
-    EntryType,
     MemberEntry,
     key_to_dependency_cmp,
     sub_members_to_imports,
@@ -29,25 +27,27 @@ BASE_TYPES: Tuple[Type, ...] = (  # type: ignore
 )
 
 
+Source = Union[str, int, float, bool, None, Dict, List]
+
+
 class DefinitionBuilder:
     definitions: List[DictEntry]
-    root_list: Set[MemberEntry]
     root_type_name: str
     type_postfix: str
     show_imports: bool
-    source: Union[Dict, List]
+    source: Source
 
     _output: Optional[str] = None
 
     def __init__(
         self,
-        source: Union[Dict, List],
+        source: Source,
+        *,
         root_type_name: str = "Root",
         type_postfix: str = "",
         show_imports: bool = True,
     ) -> None:
         self.definitions = []
-        self.root_list = set()
 
         self.root_type_name = root_type_name
         self.type_postfix = type_postfix
@@ -55,29 +55,26 @@ class DefinitionBuilder:
 
         self.source = source
 
-    def _add_definition(self, entry: EntryType) -> EntryType:
+    def _add_definition(self, entry: DictEntry) -> DictEntry:
         """ Add an entry to the definions.
 
         If the entry is a DictEntry and there's an existing entry with the same
         keys, then combine the DictEntries
         """
-        if isinstance(entry, MemberEntry):
-            self.root_list.add(entry)
-        else:
-            dicts_only = [d for d in self.definitions if isinstance(d, DictEntry)]
-            for definition in dicts_only:
-                if entry.keys == definition.keys:
-                    definition.update_members(entry.members)
-                    return definition
-                if entry.name == definition.name:
-                    idx = 1
+        dicts_only = [d for d in self.definitions if isinstance(d, DictEntry)]
+        for definition in dicts_only:
+            if entry.keys == definition.keys:
+                definition.update_members(entry.members)
+                return definition
+            if entry.name == definition.name:
+                idx = 1
+                new_name = f"{entry.name}{idx}"
+                dicts_names = [d.name for d in dicts_only]
+                while new_name in dicts_names:
+                    idx += 1
                     new_name = f"{entry.name}{idx}"
-                    dicts_names = [d.name for d in dicts_only]
-                    while new_name in dicts_names:
-                        idx += 1
-                        new_name = f"{entry.name}{idx}"
-                    entry.name = new_name
-            self.definitions.append(entry)
+                entry.name = new_name
+        self.definitions.append(entry)
         return entry
 
     def _convert_list(self, key: str, lst: List, item_name: str) -> MemberEntry:
@@ -102,7 +99,6 @@ class DefinitionBuilder:
                 definition = self._add_definition(value_type)
                 value_type = definition
             entry.members[key] = {value_type}
-
         return entry
 
     def _get_type(self, item: Any, key: str) -> Union[MemberEntry, DictEntry]:
@@ -150,19 +146,12 @@ class DefinitionBuilder:
         if self._output:
             return self._output
 
-        # Create the definitions from the source
-        if isinstance(self.source, dict):
-            self._add_definition(
-                self._convert_dict(
-                    f"{self.root_type_name}{self.type_postfix}", self.source
-                )
-            )
+        source_type = self._get_type(self.source, key=self.root_type_name)
+        if isinstance(source_type, DictEntry):
+            self._add_definition(source_type)
+            root_item = None
         else:
-            self._add_definition(
-                self._convert_list(
-                    "List", self.source, item_name=f"{self.root_type_name}Item"
-                )
-            )
+            root_item = source_type
 
         # Convert the definitions to structured output
         self._output = ""
@@ -175,9 +164,8 @@ class DefinitionBuilder:
                 if isinstance(definition, DictEntry):
                     typed_dict_import = True
                 typing_imports |= definition.get_imports()
-            if self.root_list:
-                typing_imports.add("List")
-                typing_imports |= sub_members_to_imports(self.root_list)
+            if root_item:
+                typing_imports |= sub_members_to_imports({root_item})
 
             if typing_imports:
                 self._output += "\n".join(
@@ -192,25 +180,22 @@ class DefinitionBuilder:
             [str(d) for d in sorted(self.definitions, key=key_to_dependency_cmp)]
         )
 
-        if self.root_list:
+        if not isinstance(source_type, DictEntry):
             if len(self._output):
                 self._output += "\n"
                 if len(self.definitions):
                     self._output += "\n\n"
-            self._output += f"{self.root_type_name}{self.type_postfix} = {sub_members_to_string(self.root_list)}"
+            self._output += f"{self.root_type_name}{self.type_postfix} = {sub_members_to_string({source_type})}"
 
         return self._output
 
 
 def get_type_definitions(
-    source: Union[Dict, List],
+    source: Source,
     root_type_name: str = "Root",
     type_postfix: str = "",
     show_imports: bool = True,
 ) -> str:
-    if not isinstance(source, (list, dict)):
-        raise ConvertException(f"Unsupported source type: {type(source)}")
-
     builder = DefinitionBuilder(
         source,
         root_type_name=root_type_name,
