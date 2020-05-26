@@ -46,12 +46,14 @@ class DefinitionBuilder:
         root_type_name: str = "Root",
         type_postfix: str = "",
         show_imports: bool = True,
+        force_alternative: bool = False,
     ) -> None:
         self.definitions = []
 
         self.root_type_name = root_type_name
         self.type_postfix = type_postfix
         self.show_imports = show_imports
+        self.force_alternative = force_alternative
 
         self.source = source
 
@@ -92,7 +94,7 @@ class DefinitionBuilder:
         return entry
 
     def _convert_dict(self, type_name: str, dct: Dict) -> DictEntry:
-        entry = DictEntry(type_name)
+        entry = DictEntry(type_name, force_alternative=self.force_alternative)
         for key, value in dct.items():
             value_type = self._get_type(value, key=key)
             if isinstance(value_type, DictEntry):
@@ -195,12 +197,14 @@ def get_type_definitions(
     root_type_name: str = "Root",
     type_postfix: str = "",
     show_imports: bool = True,
+    force_alternative: bool = False,
 ) -> str:
     builder = DefinitionBuilder(
         source,
         root_type_name=root_type_name,
         type_postfix=type_postfix,
         show_imports=show_imports,
+        force_alternative=force_alternative,
     )
 
     return builder.build_output()
