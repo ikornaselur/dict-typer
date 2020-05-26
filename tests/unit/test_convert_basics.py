@@ -22,6 +22,25 @@ def test_convert_simple_json() -> None:
     assert expected == get_type_definitions(source)
 
 
+def test_convert_simple_json_forced_alternative() -> None:
+    source = {"id": 123, "item": "value", "progress": 0.71}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        'Root = TypedDict("Root", {',
+        '    "id": int,',
+        '    "item": str,',
+        '    "progress": float,',
+        '})',
+    ])
+    # fmt: on
+
+    assert expected == get_type_definitions(source, force_alternative=True)
+
+
 def test_convert_with_postfix() -> None:
     source = {"id": 123, "item": "value", "progress": 0.71}
 
