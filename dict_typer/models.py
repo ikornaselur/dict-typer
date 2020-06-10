@@ -35,10 +35,14 @@ def sub_members_to_string(sub_members: SubMembers) -> str:
     return ""
 
 
-def sub_members_to_imports(sub_members: SubMembers) -> Set[str]:
+def sub_members_to_imports(
+    sub_members: SubMembers, skip: Optional[EntryType] = None
+) -> Set[str]:
     imports = set()
 
     for member in sub_members:
+        if member == skip:
+            continue
         imports |= member.get_imports()
 
     if len(sub_members) == 2 and "None" in (sm.name for sm in sub_members):
@@ -126,7 +130,7 @@ class DictEntry:
     def get_imports(self) -> Set[str]:
         imports = set()
         for sub_members in self.members.values():
-            imports |= sub_members_to_imports(sub_members)
+            imports |= sub_members_to_imports(sub_members, skip=self)
         return imports
 
     def update_members(self, members: DictMembers) -> None:
@@ -148,7 +152,11 @@ class DictEntry:
         if not self.members:
             return set()
         members = set.union(*self.members.values())
-        return set.union(*[m.depends_on for m in members], {m.name for m in members})
+        # DictEntries can depends on other entries that have the same
+        # signature, so we ignore those when adding dependants
+        return set.union(
+            *[m.depends_on for m in members if m != self], {m.name for m in members}
+        )
 
     def __hash__(self) -> int:
         return hash(str(";".join(self.keys)))

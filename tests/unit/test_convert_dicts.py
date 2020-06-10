@@ -172,3 +172,21 @@ def test_convert_nested_overlapping_dict() -> None:
     # fmt: on
 
     assert expected == get_type_definitions(source)
+
+
+def test_convert_nested_same_keys() -> None:
+    source = {"foo": {"foo": 10}}
+
+    # fmt: off
+    expected = "\n".join([
+        "from typing import Union",
+        "",
+        "from typing_extensions import TypedDict",
+        "",
+        "",
+        "class Foo(TypedDict):",
+        "    foo: Union[Foo, int]",
+    ])
+    # fmt: on
+
+    assert expected == get_type_definitions(source)
