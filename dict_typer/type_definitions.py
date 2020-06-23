@@ -4,10 +4,9 @@ from dict_typer.models import (
     DictEntry,
     MemberEntry,
     key_to_dependency_cmp,
-    sub_members_to_imports,
     sub_members_to_string,
 )
-from dict_typer.utils import key_to_class_name
+from dict_typer.utils import get_imports, key_to_class_name
 
 BASE_TYPES: Tuple[Type, ...] = (  # type: ignore
     bool,
@@ -165,9 +164,10 @@ class DefinitionBuilder:
             for definition in self.definitions:
                 if isinstance(definition, DictEntry):
                     typed_dict_import = True
-                typing_imports |= definition.get_imports()
+                typing_imports |= get_imports(definition)
+
             if root_item:
-                typing_imports |= sub_members_to_imports({root_item})
+                typing_imports |= get_imports(root_item)
 
             if typing_imports:
                 self._output += "\n".join(

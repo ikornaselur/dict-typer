@@ -1,4 +1,5 @@
 from dict_typer.models import DictEntry, MemberEntry, key_to_dependency_cmp
+from dict_typer.utils import get_imports
 
 
 def test_member_entry_base_output() -> None:
@@ -49,7 +50,7 @@ def test_member_entry_is_hashable_based_on_str_out() -> None:
     }
 
 
-def test_member_entry_get_imports() -> None:
+def test_member_entry_imports() -> None:
     just_list = MemberEntry("List")
     just_list_one_item = MemberEntry("List", sub_members={MemberEntry("str")})
     list_with_union = MemberEntry(
@@ -59,10 +60,10 @@ def test_member_entry_get_imports() -> None:
         "List", sub_members={MemberEntry("str"), MemberEntry("None")}
     )
 
-    assert just_list.get_imports() == {"List"}
-    assert just_list_one_item.get_imports() == {"List"}
-    assert list_with_union.get_imports() == {"List", "Union"}
-    assert list_with_optional.get_imports() == {"List", "Optional"}
+    assert just_list.imports == {"List"}
+    assert just_list_one_item.imports == {"List"}
+    assert list_with_union.imports == {"List", "Union"}
+    assert list_with_optional.imports == {"List", "Optional"}
 
 
 def test_member_entry_get_imports_from_sub_members() -> None:
@@ -81,7 +82,7 @@ def test_member_entry_get_imports_from_sub_members() -> None:
         sub_members={sub_entry, MemberEntry("Set", sub_members={MemberEntry("int")})},
     )
 
-    assert entry.get_imports() == {"List", "Union", "Set"}
+    assert get_imports(entry) == {"List", "Union", "Set"}
 
 
 def test_dict_entry_base_output() -> None:
@@ -164,8 +165,8 @@ def test_dict_entry_get_imports() -> None:
         },
     )
 
-    assert base_entry.get_imports() == set()
-    assert base_entry_with_list.get_imports() == {"List", "Union"}
+    assert get_imports(base_entry) == set()
+    assert get_imports(base_entry_with_list) == {"List", "Union"}
 
 
 def test_dict_entry_get_imports_from_sub_members() -> None:
@@ -181,7 +182,7 @@ def test_dict_entry_get_imports_from_sub_members() -> None:
     )
     entry = DictEntry("RootType", members={"sub": {sub_entry}})
 
-    assert entry.get_imports() == {"List", "Union"}
+    assert get_imports(entry) == {"List", "Union"}
 
 
 def test_sorting_member_entries_based_on_dependency() -> None:

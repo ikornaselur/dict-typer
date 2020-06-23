@@ -190,3 +190,26 @@ def test_convert_nested_same_keys() -> None:
     # fmt: on
 
     assert expected == get_type_definitions(source)
+
+
+def test_convert_nested_same_keys_further_down() -> None:
+    source = {"foo": {"bar": {"foo": 10}}}
+
+    expected = "\n".join(
+        [
+            "from typing import Union",
+            "",
+            "from typing_extensions import TypedDict",
+            "",
+            "",
+            "class Foo(TypedDict):",
+            "    bar: Bar",
+            "",
+            "",
+            "class Bar(TypedDict):",
+            "    foo: Union[Foo, int]",
+        ]
+    )
+
+    assert expected == get_type_definitions(source)
+

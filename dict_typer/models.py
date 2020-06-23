@@ -1,3 +1,4 @@
+import abc
 import functools
 from typing import Any, Dict, List, Optional, Set, TypeVar
 
@@ -35,25 +36,21 @@ def sub_members_to_string(sub_members: SubMembers) -> str:
     return ""
 
 
-def sub_members_to_imports(
-    sub_members: SubMembers, skip: Optional[EntryType] = None
-) -> Set[str]:
-    imports = set()
+class Entry(abc.ABC):
+    @abc.abstractproperty
+    def imports(self) -> Set[str]:
+        pass
 
-    for member in sub_members:
-        if member == skip:
-            continue
-        imports |= member.get_imports()
+    @abc.abstractproperty
+    def depends_on(self) -> Set[str]:
+        pass
 
-    if len(sub_members) == 2 and "None" in (sm.name for sm in sub_members):
-        imports.add("Optional")
-    elif len(sub_members) > 1:
-        imports.add("Union")
-
-    return imports
+    @abc.abstractproperty
+    def sub_entries(self) -> SubMembers:
+        pass
 
 
-class MemberEntry:
+class MemberEntry(Entry):
     """ A representation of a type with optional sub types.
 
     A MemberEntry without subtypes can be considered as a leaf of a tree, in
@@ -68,12 +65,24 @@ class MemberEntry:
         self.name = name
         self.sub_members = sub_members or set()
 
-    def get_imports(self) -> Set[str]:
+    @property
+    def imports(self) -> Set[str]:
         imports = set()
         if self.name in KNOWN_TYPE_IMPORTS:
             imports.add(self.name)
 
-        return imports | sub_members_to_imports(self.sub_members)
+        if len(self.sub_members) == 2 and "None" in (
+            sm.name for sm in self.sub_members
+        ):
+            imports.add("Optional")
+        elif len(self.sub_members) > 1:
+            imports.add("Union")
+
+        return imports
+
+    @property
+    def sub_entries(self) -> SubMembers:
+        return self.sub_members
 
     @property
     def depends_on(self) -> Set[str]:
@@ -100,7 +109,7 @@ class MemberEntry:
         return self.name
 
 
-class DictEntry:
+class DictEntry(Entry):
     """ A representation of a typed dict.
 
     A typed dict will have a name and a members map. The value of each member
@@ -127,12 +136,6 @@ class DictEntry:
         self.indentation = indentation
         self.force_alternative = force_alternative
 
-    def get_imports(self) -> Set[str]:
-        imports = set()
-        for sub_members in self.members.values():
-            imports |= sub_members_to_imports(sub_members, skip=self)
-        return imports
-
     def update_members(self, members: DictMembers) -> None:
         if set(members.keys()) != self.keys:
             raise Exception("Keys don't match between members")
@@ -144,19 +147,32 @@ class DictEntry:
         return any(not is_valid_key(key) for key in self.keys)
 
     @property
+    def imports(self) -> Set[str]:
+        imports = set()
+
+        for sub_members in self.members.values():
+            if len(sub_members) == 2 and "None" in (sm.name for sm in sub_members):
+                imports.add("Optional")
+            elif len(sub_members) > 1:
+                imports.add("Union")
+
+        return imports
+
+    @property
     def keys(self) -> Set[str]:
         return set(self.members.keys())
+
+    @property
+    def sub_entries(self) -> SubMembers:
+        return functools.reduce(lambda x, y: x.union(y), self.members.values(), set())
 
     @property
     def depends_on(self) -> Set[str]:
         if not self.members:
             return set()
         members = set.union(*self.members.values())
-        # DictEntries can depends on other entries that have the same
-        # signature, so we ignore those when adding dependants
-        return set.union(
-            *[m.depends_on for m in members if m != self], {m.name for m in members}
-        )
+
+        return {m.name for m in members}
 
     def __hash__(self) -> int:
         return hash(str(";".join(self.keys)))
