@@ -1,7 +1,7 @@
 from dict_typer import get_type_definitions
 
 
-def test_convert_simple_json() -> None:
+def test_convert_with_a_name_map() -> None:
     source = {"id": 123, "item": "value", "things": [{"foo": "bar"}, {"baz": "quz"}]}
 
     name_map = {
