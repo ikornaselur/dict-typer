@@ -28,6 +28,7 @@ BASE_TYPES: Tuple[Type, ...] = (  # type: ignore
 
 
 Source = Union[str, int, float, bool, None, Dict, List]
+NameMap = Dict[str, str]
 
 
 class DefinitionBuilder:
@@ -36,6 +37,7 @@ class DefinitionBuilder:
     type_postfix: str
     show_imports: bool
     source: Source
+    name_map: NameMap
 
     _output: Optional[str] = None
 
@@ -47,6 +49,7 @@ class DefinitionBuilder:
         type_postfix: str = "",
         show_imports: bool = True,
         force_alternative: bool = False,
+        name_map: NameMap = None,
     ) -> None:
         self.definitions = []
 
@@ -54,8 +57,16 @@ class DefinitionBuilder:
         self.type_postfix = type_postfix
         self.show_imports = show_imports
         self.force_alternative = force_alternative
+        if name_map:
+            self.name_map = name_map
+        else:
+            self.name_map = {}
 
         self.source = source
+
+    def _get_name(self, name: str) -> str:
+        """ Return the mapped name if it exist """
+        return self.name_map.get(name, name)
 
     def _add_definition(self, entry: DictEntry) -> DictEntry:
         """ Add an entry to the definions.
@@ -94,7 +105,9 @@ class DefinitionBuilder:
         return entry
 
     def _convert_dict(self, type_name: str, dct: Dict) -> DictEntry:
-        entry = DictEntry(type_name, force_alternative=self.force_alternative)
+        entry = DictEntry(
+            self._get_name(type_name), force_alternative=self.force_alternative
+        )
         for key, value in dct.items():
             value_type = self._get_type(value, key=key)
             if isinstance(value_type, DictEntry):
@@ -198,6 +211,7 @@ def get_type_definitions(
     type_postfix: str = "",
     show_imports: bool = True,
     force_alternative: bool = False,
+    name_map: NameMap = None,
 ) -> str:
     builder = DefinitionBuilder(
         source,
@@ -205,6 +219,7 @@ def get_type_definitions(
         type_postfix=type_postfix,
         show_imports=show_imports,
         force_alternative=force_alternative,
+        name_map=name_map,
     )
 
     return builder.build_output()
